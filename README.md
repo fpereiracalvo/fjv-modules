@@ -62,13 +62,13 @@ You have created the **--screen** and **--file** options to the **-print** modul
 The parameters of the options are taken from the command-line argument and it's converted to the correspond Type automatically.
 
 ```shell
-mycommnand sample.txt --print "hello world!" --file filename.txt
+myprogram sample.txt --print "hello world!" --file filename.txt
 ```
 
 If the method has many parameters so they must be separated by commas:
 
 ```shell
-mycommnand sample.txt --print --someOption parameter1,parameter2,parameter3
+myprogram sample.txt --print --someOption parameter1,parameter2,parameter3
 ```
 
 The parameters of the option must have the same quantity of parameters of the binded method.
@@ -187,7 +187,7 @@ namespace SomeExample
 
 The result is:
 ```shell
-mycommnand sample.txt
+myprogram sample.txt
 ```
 
 ## Control taker property
