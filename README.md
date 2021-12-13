@@ -6,7 +6,7 @@ You can put or remove parts easily changing the program behavior without dealing
 
 # Getting started
 
-Install the library.
+Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
 
 Your class must be implement IModule interface. IModule interface has basics properties and methods neceseries to load and control de execution of the module.
 
