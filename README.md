@@ -1,6 +1,6 @@
 # General
 
-Fjv.Modules is a library that offering a pattern to binding classes and methods that will be activated through program command-line argument read.
+Fjv.Modules is a library that offer a pattern to bind classes and methods that will be activated through program command-line argument read.
 
 You can put or remove parts easily changing the program behavior without dealing with complicated manual string/class binding.
 
@@ -8,7 +8,7 @@ You can put or remove parts easily changing the program behavior without dealing
 
 Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
 
-Your class must be implement IModule interface. IModule interface has basics properties and methods neceseries to load and control de execution of the module.
+Your class must be implement IModule interface. IModule interface has basic properties and methods neceseries to load and control de execution of the module.
 
 Bind your module class with Module attribte and give it a name, like the example below:
 
