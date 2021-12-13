@@ -197,7 +197,7 @@ namespace Fjv.Modules
 
                                 moduleItem.Options.Add(optionItem);
 
-                                if(this.HasModule(args[y]))
+                                if(args.Length<y && this.HasModule(args[y]))
                                 {
                                     i--;
                                     
