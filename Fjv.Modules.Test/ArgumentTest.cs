@@ -7,19 +7,20 @@ using System.IO;
 
 namespace Fjv.Modules.Test
 {
-    public class UnitTest1
+    public class ArgumentTest
     {
         [Fact]
         public void EchoFileTextTest()
         {
             var args = new string[]{ Path.Combine("..", "..", "..", "..", "Files", "helloWorld.txt"), "--echo" };
 
-            var moduleFactory = new ModuleFactory(typeof(UnitTest1).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(ArgumentTest).Assembly);
 
             var buffer= moduleFactory.Run(args);
 
             //buffer has byte array of file text.
             Assert.NotEmpty(buffer);
+            Assert.True(moduleFactory.HasModule("*"));
         }
     }
 

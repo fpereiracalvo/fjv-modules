@@ -181,28 +181,30 @@ namespace Fjv.Modules
                                 optionItem.Name = args[y];
                                 var argumentTypes = this.GetMethodTypesArgument(moduleItem.Module, optionItem.Name);
 
-                                y++;
-                                i=y;
 
                                 if(argumentTypes.Length > 1)
                                 {
+                                    y++;
                                     var index=0;
                                     var values = args[y].Split(',');
                                     optionItem.Arguments = argumentTypes.Select(s=>Convert.ChangeType(values[index++], s)).ToArray();
                                 }
                                 else if(argumentTypes.Any())
                                 {
+                                    y++;
+
                                     optionItem.Arguments = new object[]{ Convert.ChangeType(args[y], argumentTypes.SingleOrDefault()) };
                                 }
 
+                                i=y;
                                 moduleItem.Options.Add(optionItem);
 
-                                if(args.Length<y && this.HasModule(args[y]))
-                                {
-                                    i--;
+                                // if(args.Length<y && this.HasModule(args[y]))
+                                // {
+                                //     i--;
                                     
-                                    break;
-                                }
+                                //     break;
+                                // }
                             }
                             else
                             {
