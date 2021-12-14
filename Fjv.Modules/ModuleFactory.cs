@@ -198,13 +198,6 @@ namespace Fjv.Modules
 
                                 i=y;
                                 moduleItem.Options.Add(optionItem);
-
-                                // if(args.Length<y && this.HasModule(args[y]))
-                                // {
-                                //     i--;
-                                    
-                                //     break;
-                                // }
                             }
                             else
                             {
