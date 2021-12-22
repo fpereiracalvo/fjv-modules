@@ -8,7 +8,7 @@ You can put or remove parts easily changing the program behavior without dealing
 
 Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
 
-Your class must be implement IModule interface. IModule interface has basic properties and methods neceseries to load and control de execution of the module.
+Your class must be implement IModule interface. IModule interface has basic properties and methods neceseries to load and control execution of the module.
 
 Bind your module class with Module attribte and give it a name, like the example below:
 
@@ -135,8 +135,8 @@ namespace SomeExample
 It's posibble give running control to the modules with some propeties.
 
 The IModule interface has four boolean properties:
-* IsOutput: mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
-* IsInput: mark the module as an output The module and options will be run in last place.
+* IsInput: mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
+* IsOutput: mark the module as an output The module and options will be run in last place.
 * IsControlTaker: mark the module as control taker. This module return immediately a result.
 * NeedArgument: mark the module to take aditional input argument. Run the method byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index). passing the content bytes to moduleArgument.
 
