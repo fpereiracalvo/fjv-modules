@@ -1,27 +1,31 @@
+using System;
+using Fjv.Modules.Commons;
+
 namespace Fjv.Modules.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class ModuleAttribute : System.Attribute
     {
-        readonly string _modulename;
-        public string ModuleName => _modulename;
+        readonly string _moduleName;
+        readonly ModuleRunningControl _runningControl;
+        public string ModuleName => _moduleName;
+        public ModuleRunningControl RunningControl => _runningControl;
         
         public ModuleAttribute(string modulename)
         {
-            _modulename = modulename;
+            _moduleName = modulename;
+            _runningControl = ModuleRunningControl.NotSet;
         }
-    }
-
-    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-    public sealed class OptionAttribute : System.Attribute
-    {
-        readonly string optionname;
-
-        public string OptionName => optionname;
-
-        public OptionAttribute(string optionname)
+        
+        public ModuleAttribute(string moduleName, ModuleRunningControl runningControl)
+            : this(moduleName)
         {
-            this.optionname = optionname;
+            if((runningControl & ModuleRunningControl.Input) == ModuleRunningControl.Input &&
+            (runningControl & ModuleRunningControl.Output) == ModuleRunningControl.Output)
+            {
+                throw new Exception($"The module {moduleName} cannot being an input and output at the same time.");
+            }
+            _runningControl = runningControl;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Fjv.Modules
 
             foreach (var item in modules)
             {
-                if(item.Module.IsControlTaker)
+                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
                 {
                     return Run(item, this, buffer);
                 }
@@ -53,7 +53,7 @@ namespace Fjv.Modules
         {
             byte[] result = null;
 
-            if(module.Module.NeedArgument)
+            if(module.Module.HasRunnningControl(ModuleRunningControl.RequireArgument))
             {
                 result = module.Module.Load(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
             }
@@ -74,7 +74,7 @@ namespace Fjv.Modules
 
         public virtual IModule GetModule(string modulename)
         {
-            var moduleType = GetModulesQuery(modulename).ToList().SingleOrDefault(s=>s.Name.Equals(modulename))?.Module;
+            var moduleType = GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))?.Module;
 
             if(moduleType==null)
             {
@@ -88,10 +88,10 @@ namespace Fjv.Modules
 
         public virtual bool HasModule(string modulename)
         {
-            return GetModulesQuery(modulename).ToList().SingleOrDefault(s=>s.Name.Equals(modulename))!=null;
+            return GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))!=null;
         }
 
-        internal IQueryable<ModuleItemResult> GetModulesQuery(string modulename)
+        internal IQueryable<ModuleItemResult> GetModulesAsQueryable()
         {
             return _modules.Select(s=> new ModuleItemResult{
                     Module = s,
@@ -152,7 +152,17 @@ namespace Fjv.Modules
 
                 if(moduleItem.Module!=null)
                 {
-                    if(moduleItem.Module.NeedArgument)
+                    if(moduleItem.Module.HasRunnningControl(ModuleRunningControl.Unique))
+                    {
+                        var hasModule = modules.Where(s=>s.Module.GetType().Equals(moduleItem.Module.GetType())).Count()>0;
+
+                        if(hasModule)
+                        {
+                            throw new Exception($"The module {item} doesn't allow attach one more than exist.");
+                        }
+                    }
+
+                    if(moduleItem.Module.HasRunnningControl(ModuleRunningControl.RequireArgument))
                     {
                         var argument = args[i+1];
 
@@ -211,9 +221,11 @@ namespace Fjv.Modules
                 }
             }
 
-            return modules.Where(m=>m.Module.IsInput)
-                .Concat(modules.Where(m=>!m.Module.IsOutput&&!m.Module.IsInput))
-                .Concat(modules.Where(m=>m.Module.IsOutput)).ToList();
+            return modules.Where(m=>m.Module.HasRunnningControl(ModuleRunningControl.Input))
+                .Concat(modules.Where(m=>
+                    !m.Module.HasRunnningControl(ModuleRunningControl.Input) && 
+                    !m.Module.HasRunnningControl(ModuleRunningControl.Output)))
+                .Concat(modules.Where(m=>m.Module.HasRunnningControl(ModuleRunningControl.Output))).ToList();
         }
 
         private bool OptionExist(IModule module, string option)

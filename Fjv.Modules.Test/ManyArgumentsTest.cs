@@ -21,16 +21,23 @@ namespace Fjv.Modules.Test
             Assert.True(moduleFactory.HasModule("-o"));
             Assert.True(moduleFactory.HasModule("merge"));
         }
+
+        [Fact]
+        public void RunManyArgumnetsWithUniqueExceptionTestMethod()
+        {
+            var args = new string[]{ "-p", "--rs", "-s", "--put", "2", "-o", "merge", "./*.txt", "-p" };
+
+            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
+
+            Assert.Throws<Exception>(new Action(()=>{
+                var buffer = moduleFactory.Run(args);
+            }));
+        }
     }
 
-    [Module("-p")]
+    [Module("-p", Commons.ModuleRunningControl.Unique)]
     public class PClass : IModule
     {
-        public bool IsOutput => false;
-        public bool IsInput => false;
-        public bool IsControlTaker => false;
-        public bool NeedArgument => false;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             Console.WriteLine(nameof(PClass));
@@ -53,11 +60,6 @@ namespace Fjv.Modules.Test
     [Module("-s")]
     public class SClass : IModule
     {
-        public bool IsOutput => false;
-        public bool IsInput => false;
-        public bool IsControlTaker => false;
-        public bool NeedArgument => false;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             Console.WriteLine(nameof(SClass));
@@ -79,14 +81,9 @@ namespace Fjv.Modules.Test
         }
     }
 
-    [Module("-o")]
+    [Module("-o", Commons.ModuleRunningControl.Input)]
     public class OClass : IModule
     {
-        public bool IsOutput => true;
-        public bool IsInput => false;
-        public bool IsControlTaker => false;
-        public bool NeedArgument => false;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             Console.WriteLine(nameof(OClass));
@@ -100,14 +97,12 @@ namespace Fjv.Modules.Test
         }
     }
 
-    [Module("merge")]
+    [Module("merge", 
+        Commons.ModuleRunningControl.Input | 
+        Commons.ModuleRunningControl.ControlTaker | 
+        Commons.ModuleRunningControl.RequireArgument)]
     public class MergeClass : IModule
     {
-        public bool IsOutput => false;
-        public bool IsInput => true;
-        public bool IsControlTaker => true;
-        public bool NeedArgument => true;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             throw new System.NotImplementedException();

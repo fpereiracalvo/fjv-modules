@@ -29,11 +29,6 @@ namespace Fjv.Modules.Test
     {
         string _text;
 
-        public bool IsOutput => false;
-        public bool IsInput => false;
-        public bool IsControlTaker => false;
-        public bool NeedArgument => false;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             var filepath = Encoding.UTF8.GetString(input);

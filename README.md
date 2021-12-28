@@ -1,14 +1,15 @@
 # General
 
-Fjv.Modules is a library that offer a pattern to bind classes and methods that will be activated through program command-line argument read.
+Fjv.Modules is a library that offer a pattern to bind classes and methods that will be activated by command-line argument.
 
-You can put or remove parts easily changing the program behavior without dealing with complicated manual string/class binding.
+Just put or remove the attribute to change the command-line program behavior without dealing with complicated manual binding.
 
 # Getting started
 
 Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
 
-Your class must be implement IModule interface. IModule interface has basic properties and methods neceseries to load and control execution of the module.
+## Implementation
+The class must be implement IModule interface. IModule interface has thow methods neceseries to load the module.
 
 Bind your module class with Module attribte and give it a name, like the example below:
 
@@ -35,7 +36,7 @@ public class PrintModule : IModule
 ```
 You have created the **-print** module to the program.
 
-The input and output must be byte array content. The reason why resides to ensure the data will passing from module to anothee without type incompatibilities.
+The input and output must be a byte array content. The reason why resides to ensure the data will be passing from module to another independently manner.
 All methods could been an option of the command-line argument. For this, you must be decorated this with Option attribute.
 
 ```csharp
@@ -62,13 +63,13 @@ You have created the **--screen** and **--file** options to the **-print** modul
 The parameters of the options are taken from the command-line argument and it's converted to the correspond Type automatically.
 
 ```shell
-myprogram sample.txt --print "hello world!" --file filename.txt
+myprogram --print "hello world!" --file filename.txt
 ```
 
 If the method has many parameters so they must be separated by commas:
 
 ```shell
-myprogram sample.txt --print --someOption parameter1,parameter2,parameter3
+myprogram --print --someOption parameter1,parameter2,parameter3
 ```
 
 The parameters of the option must have the same quantity of parameters of the binded method.
@@ -95,7 +96,7 @@ namespace SomeExample
             
             var moduleFactory = new ModuleFactory(typeof(Program).Assembly);
 
-            var buffer= moduleFactory.Run(args);
+            var buffer = moduleFactory.Run(args);
         }
     }
 }
@@ -132,33 +133,28 @@ namespace SomeExample
 
 # Running control
 
-It's posibble give running control to the modules with some propeties.
+It's posibble give running control to the modules using ModuleRunningControl enum on Module attribute.
 
-The IModule interface has four boolean properties:
-* IsInput: mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
-* IsOutput: mark the module as an output The module and options will be run in last place.
-* IsControlTaker: mark the module as control taker. This module return immediately a result.
-* NeedArgument: mark the module to take aditional input argument. Run the method byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index). passing the content bytes to moduleArgument.
+* Input: it mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
+* Output: it mark the module as an output The module and options will be run in last place.
+* ControlTaker: it mark the module as control taker. This module return immediately a result.
+* RequireArgument: it mark the module to take aditional input argument. Run the method byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index). passing the content bytes to moduleArgument.
+* Unique: it mark the module to doesn't attach more than one time. The module factory will throw an Exception if occur.
 
-If all properties are false so the module will run in order of appear.
+You can combine all enums, except Input and Output.
 
 # Features
 
 ## Wildcard
 
-This library allow to you using the "*" (asterisk) wildcard. It useful to take strings as inputs for your program.
+This library allow to you using the "*" (asterisk) wildcard onto Module attribute. It useful to take unknow strings as inputs for your program.
 
 ```csharp
 namespace SomeExample
 {
-    [Module("*")]
+    [Module("*", ModuleRunningControl.Input)]
     public class OpenFileModule : IModule
     {
-        public bool IsOutput => false;
-        public bool IsInput => true;
-        public bool IsControlTaker => false;
-        public bool NeedArgument => false;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             var filename = System.Text.Encoding.UTF8.GetString(input);
@@ -187,25 +183,20 @@ namespace SomeExample
 
 The result is:
 ```shell
-myprogram sample.txt
+myprogram /somepath/sample.txt
 ```
 
-## Control taker property
+## Control taker
 
-The next sample shows how use the control taker.
+The next sample shows how could you use the control taker.
 
 ```csharp
 namespace SomeExample
 {
     // run the command-line argument over each file in the directory.
-    [Module("files")]
+    [Module("files",  ModuleRunningControl.Input |  ModuleRunningControl.ControlTaker |  ModuleRunningControl.RequireArgument)]
     public class OpenDirectoryFilesModule : IModule
     {
-        public bool IsOutput => false;
-        public bool IsInput => true;
-        public bool IsControlTaker => true;
-        public bool NeedArgument => true;
-
         public byte[] Load(byte[] input, string[] args, int index)
         {
             // this method will not run.
