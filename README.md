@@ -48,13 +48,19 @@ public class PrintModule : IModule
     [Option("--screen")]
     public byte[] PrintScreen()
     {
+        //print text on to screen.
         Console.WriteLine(_content.ToString());
+
+        //intentionaly omitted.
     }
 
     [Option("--file")]
     public byte[] SaveFile(string filename)
     {
+        //save the text content into file.
         _content.Save(filename);
+
+        //intentionaly omitted.
     }
 }
 ```
@@ -73,6 +79,60 @@ myprogram --print --someOption parameter1,parameter2,parameter3
 ```
 
 The parameters of the option must have the same quantity of parameters of the binded method.
+
+## Byte array result
+
+Each Load(...) and Option method executed can return a byte array that probably will be used as an input to the next module, like a chain reaction.
+
+To illustrate this, we will create the *TextProcessModule* with an option method to remove some part of the text. The other class will be *FileModule*, that will be responsible to save the input byte array to a file.
+
+See the sample code below:
+
+```csharp
+//some source
+
+[Module("*", ModuleRunningControl.Input)]
+public class TextProcessModule : IModule
+{
+    //intentionaly omitted.
+
+    [Option("--remove")]
+    public byte[] RemoveFromText(string remove)
+    {
+        return Encoding.UTF8.GetBytes(_inputContent.Replace(remove, ""));
+    }
+}
+
+//other source
+
+[Module("-file", ModuleRunningControl.Output)]
+public class FileModule : IModule
+{
+    byte[] _content;
+
+    //intentionaly omitted.
+
+    public byte[] Load(byte[] input, string[] args, int index)
+    {
+        //load the byte array content as string.
+        _content = input;
+
+        return input;
+    }
+
+    [Option("--save")]
+    public byte[] SaveFile(string filename)
+    {
+        //save the text content into file.
+        File.WriteAllBytes(filename, input);
+
+        return input;
+    }
+}
+```
+
+The potential of this allow to you combine a lot of modules to process the content input at first module
+
 
 # Code sample
 
@@ -125,7 +185,7 @@ namespace SomeExample
                 typeof(OtherOne).Assembly
             });
 
-            var buffer= moduleFactory.Run(args);
+            var buffer = moduleFactory.Run(args);
         }
     }
 }
@@ -188,7 +248,7 @@ myprogram /somepath/sample.txt
 
 ## Control taker
 
-When the module is a ControlTaker the application will run just only if the module name is present in the command-line argument. It can use to special application way.
+When the module is a ControlTaker the application will run just only that module if it present in the command-line argument. It can use to special application way.
 
 ```csharp
 //intentionaly omitted.
@@ -267,15 +327,18 @@ namespace SomeExample
                 
                 var file = System.IO.File.ReadAllBytes(filename);
 
-                moduleFactory.Run(auxArgs, file);
+                var result = moduleFactory.Run(auxArgs, file);
+
+                //do something with the result or nothing.
             }
 
+            //is possible return a null content.
             return null;
         }
     }
 }
 ```
 
-As you can see. It's possible run the module factory even inside an other module with another assembly or assemblies with new modules group.
+As you can see, it's possible run the ModuleFactory inside with other assembly or assemblies with a new modules group.
 
 Enjoy!
