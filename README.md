@@ -9,9 +9,9 @@ Just put or remove the attribute to change the command-line program behavior wit
 Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
 
 ## Implementation
-The class must be implement IModule interface. IModule interface has thow methods neceseries to load the module.
+The class must be implement IModule interface. IModule interface has thow methods that needed to load the module.
 
-Bind your module class with Module attribte and give it a name, like the example below:
+Bind your module class with Module attribute and give it a name, like the example below:
 
 ```csharp
 [Module("-print")]
@@ -137,7 +137,7 @@ It's posibble give running control to the modules using ModuleRunningControl enu
 
 * Input: it mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
 * Output: it mark the module as an output The module and options will be run in last place.
-* ControlTaker: it mark the module as control taker. This module return immediately a result.
+* ControlTaker: it mark the module as control taker. The application return immediately a result if it module is present in the command-line.
 * RequireArgument: it mark the module to take aditional input argument. Run the method byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index). passing the content bytes to moduleArgument.
 * Unique: it mark the module to doesn't attach more than one time. The module factory will throw an Exception if occur.
 
@@ -188,9 +188,40 @@ myprogram /somepath/sample.txt
 
 ## Control taker
 
+When the module is a ControlTaker the application will run just only if the module name is present in the command-line argument. It can use to special application way.
+
+```csharp
+//intentionaly omitted.
+
+namespace SomeExample
+{
+    [Module("files",  ModuleRunningControl.Input |  ModuleRunningControl.ControlTaker |  ModuleRunningControl.RequireArgument)]
+    public class OpenDirectoryFilesModule : IModule
+    {
+        public byte[] Load(byte[] input, string[] args, int index)
+        {
+            // this method will not run.
+
+            throw new NotImplementedException();
+        }
+
+        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
+        {
+            //get required argument.
+
+            //do stuff.
+
+            return someResult;
+        }
+    }
+}
+```
+
 The next sample shows how could you use the control taker.
 
 ```csharp
+//intentionaly omitted.
+
 namespace SomeExample
 {
     // run the command-line argument over each file in the directory.
@@ -227,7 +258,7 @@ namespace SomeExample
             var auxArgs = args.Take(index).ToArray().Concat(args.Skip(index+2).ToArray()).ToArray();
 
             // initialize an internal module factory.
-            var moduleFactory = new ModuleFactory(typeof(Program).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(Custom).Assembly);
 
             foreach (var filepath in files)
             {
@@ -245,4 +276,6 @@ namespace SomeExample
 }
 ```
 
-As you see. It's possible run the module factory even inside an other module.
+As you can see. It's possible run the module factory even inside an other module with another assembly or assemblies with new modules group.
+
+Enjoy!
