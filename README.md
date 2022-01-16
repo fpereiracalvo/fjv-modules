@@ -2,83 +2,136 @@
 
 Fjv.Modules is a library that offer a pattern to bind classes and methods that will be activated by command-line argument.
 
-Just put or remove the attribute to change the command-line program behavior without dealing with complicated manual binding.
+Put or remove modules easily and the ModuleFactory take care to find your classes inside the specified assembly or assemblies.
+
+```csharp
+// load module classea automatically.
+ModuleFactory moduleFactory = new ModuleFactory(typeof(Program).Assembly);
+
+// run arguments command-line.
+byte[] buffer = moduleFactory.Run(args);
+```
 
 # Getting started
 
-Install this library from NuGet https://www.nuget.org/packages/Fjv.Modules/ or download the code source from https://github.com/fpereiracalvo/fjv-modules.
+Install the library from NuGet.
+* https://www.nuget.org/packages/Fjv.Modules/
+
+You can see the code source from GitHub.
+* https://github.com/fpereiracalvo/fjv-modules.
 
 ## Implementation
-The class must be implement IModule interface. IModule interface has thow methods that needed to load the module.
 
-Bind your module class with Module attribute and give it a name, like the example below:
+### IModule interface
+
+IModule interface has two methods for loading the module depends on of the situation. It is imperative to implement this interface.
+
+You must implement Load(byte[] input, string[] args, int index) when the class dont need nothing special. In the other way, if you need passing a specified parameter to your module from the command-line, you must implement Load(byte[] input, byte[] moduleArgument, string[] args, int index). The last one need to combine with attribute parameter ModuleRunningControl.RequireArgument.
+
+### Module attribute
+
+The Module attribute is used to give a name, or in other words, a string caller name, and runing control to your class module if you like. It is not allowing more than one module with the same name.
+
+#### Module sample
+
+The next sample shows how whould define a simple module.
 
 ```csharp
-[Module("-print")]
+[Module("-print", ModuleRunningControl.RequireArgument)]
 public class PrintModule : IModule
 {
     CustomObject _content;
 
-    //intentionaly omitted.
+    public byte[] Load(byte[] input, string[] args, int index)
+    {
+        throw new NotImplementedException();
+    }
+
+    public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
+    {
+        _content = SomeCustomObjectLoader(moduleArgument);
+
+        return input;
+    }
+}
+```
+
+So, now when you run the program and passign the "-print some_file.txt" (without quotes) the second Load method will be invoke. The input will null, but moduleArgument will have the string some_file.txt as byte array.
+
+For this sample SomeCustomObjectLoader process the byte array content passing as argument of the module. In this case is a string with the name of a file. Suppose the method SomeCustomObjectLoader return a object that is save into _content.
+
+Now we need to print the content over screen. So now, we must add an option to do that.
+
+#### Option sample
+
+An option is a method that can receive parameter and make some process. All methods would you like use as an option of your module you must decorate with Option attribute and give it a name. It is not allowing more than one option with the same name.
+
+```csharp
+[Module("-print", ModuleRunningControl.RequireArgument)]
+public class PrintModule : IModule
+{
+    CustomObject _content;
 
     public byte[] Load(byte[] input, string[] args, int index)
     {
-        _content = SomeCustomObjectLoader(input);
+        throw new NotImplementedException();
+    }
+
+    public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
+    {
+        // load the content.
+        _content = SomeCustomObjectLoader(moduleArgument);
 
         return input;
+    }
+
+    [Option("--screen")]
+    public byte[] PrintScreen()
+    {
+        // print text on to screen.
+        Console.WriteLine(_content.ToString());
+
+        return _content.ToByteArray();
+    }
+}
+```
+
+Now if we would like to save the content into a file, we need to create a new class module to separate the responsibility. In this case we just will use the default input.
+
+```csharp
+[Module("-save")]
+public class PrintModule : IModule
+{
+    byte[] _content;
+
+    public byte[] Load(byte[] input, string[] args, int index)
+    {
+        _content = input;
     }
 
     public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
     {
         throw new NotImplementedException();
     }
-}
-```
-You have created the **-print** module to the program.
-
-The input and output must be a byte array content. The reason why resides to ensure the data will be passing from module to another independently manner.
-All methods could been an option of the command-line argument. For this, you must be decorated this with Option attribute.
-
-```csharp
-[Module("-print")]
-public class PrintModule : IModule
-{
-    //intentionaly omitted.
-
-    [Option("--screen")]
-    public byte[] PrintScreen()
-    {
-        //print text on to screen.
-        Console.WriteLine(_content.ToString());
-
-        //intentionaly omitted.
-    }
 
     [Option("--file")]
-    public byte[] SaveFile(string filename)
+    public byte[] PrintScreen(string path)
     {
-        //save the text content into file.
-        _content.Save(filename);
+        // print text on to screen.
+        File.WriteAllBytes(path, _content);
 
-        //intentionaly omitted.
+        return _content;
     }
 }
 ```
-You have created the **--screen** and **--file** options to the **-print** module.
 
-The parameters of the options are taken from the command-line argument and it's converted to the correspond Type automatically.
-
-```shell
-myprogram --print "hello world!" --file filename.txt
-```
-
-If the method has many parameters so they must be separated by commas:
+So, you can run.
 
 ```shell
-myprogram --print --someOption parameter1,parameter2,parameter3
+myprogram --print some_file.txt --screen -save --file copy.txt
 ```
 
-The parameters of the option must have the same quantity of parameters of the binded method.
+The byte array content of -print module is passing to input of -save module. If you like make changes into the byte array data you have enterily fredom to that.
 
 ## Byte array result
 
@@ -124,17 +177,16 @@ public class FileModule : IModule
     public byte[] SaveFile(string filename)
     {
         //save the text content into file.
-        File.WriteAllBytes(filename, input);
+        File.WriteAllBytes(filename, _content);
 
-        return input;
+        return _content;
     }
 }
 ```
 
-The potential of this allow to you combine a lot of modules to process the content input at first module
+You can use object inside your modules if you'll like, but the output always must be a byte array.
 
-
-# Code sample
+# Program sample
 
 The most basic implementation of the module factory it's look like:
 
@@ -193,7 +245,7 @@ namespace SomeExample
 
 # Running control
 
-It's posibble give running control to the modules using ModuleRunningControl enum on Module attribute.
+The Module can receive a second paramenter to give running control to it using ModuleRunningControl enum, details below:
 
 * Input: it mark the module as an input. The module and options will be run in first place before the rest of modules encountered.
 * Output: it mark the module as an output The module and options will be run in last place.
@@ -207,7 +259,7 @@ You can combine all enums, except Input and Output.
 
 ## Wildcard
 
-This library allow to you using the "*" (asterisk) wildcard onto Module attribute. It useful to take unknow strings as inputs for your program.
+This library allow wildcard, that useful to take unknow strings as inputs for your program. You must specified the name as "*". It is not allowing more than one.
 
 ```csharp
 namespace SomeExample
@@ -329,16 +381,16 @@ namespace SomeExample
 
                 var result = moduleFactory.Run(auxArgs, file);
 
-                //do something with the result or nothing.
+                // do something with the result or nothing.
             }
 
-            //is possible return a null content.
+            // it is possible return a null content.
             return null;
         }
     }
 }
 ```
 
-As you can see, it's possible run the ModuleFactory inside with other assembly or assemblies with a new modules group.
+As you can see, it's possible run the ModuleFactory inside the same or other assemblies that has new modules group.
 
 Enjoy!

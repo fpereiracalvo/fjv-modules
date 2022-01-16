@@ -12,7 +12,10 @@ namespace Fjv.Modules.Test
         [Fact]
         public void EchoFileTextTest()
         {
-            var args = new string[]{ Path.Combine("..", "..", "..", "..", "Files", "helloWorld.txt"), "--echo" };
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            path = path.Remove(path.IndexOf("Fjv.Modules.Test"));
+
+            var args = new string[]{ Path.Combine(path, "Files", "helloWorld.txt"), "--echo" };
 
             var moduleFactory = new ModuleFactory(typeof(ArgumentTest).Assembly);
 
