@@ -62,9 +62,11 @@ For this sample SomeCustomObjectLoader process the byte array content passing as
 
 Now we need to print the content over screen. So now, we must add an option to do that.
 
-#### Option sample
+### Option attribute
 
-An option is a method that can receive parameter and make some process. All methods would you like use as an option of your module you must decorate with Option attribute and give it a name. It is not allowing more than one option with the same name.
+An option is a method that can receive parameters and make some process. All methods would you like use as an option of your module you must decorate with Option attribute and give it a name. It is not allowing more than one option with the same name.
+
+#### Option sample
 
 ```csharp
 [Module("-print", ModuleRunningControl.RequireArgument)]
