@@ -5,7 +5,7 @@ Fjv.Modules is a library that offer a pattern to bind classes and methods that w
 Put or remove modules easily and the ModuleFactory take care to find your classes inside the specified assembly or assemblies.
 
 ```csharp
-// load module classea automatically.
+// load module classes automatically.
 ModuleFactory moduleFactory = new ModuleFactory(typeof(Program).Assembly);
 
 // run arguments command-line.
