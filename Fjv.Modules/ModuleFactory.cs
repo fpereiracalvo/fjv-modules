@@ -7,127 +7,15 @@ using Fjv.Modules.Extensions;
 
 namespace Fjv.Modules
 {
-    public class ModuleFactory
+    public partial class ModuleFactory : ModuleFactoryBase
     {
-        List<Type> _modules;
-        
         public ModuleFactory(Assembly assembly)
-        {
-            _modules = new List<Type>();
-
-            var moduleTypes = assembly.GetModuleTypes();
-
-            _modules = moduleTypes.Select(s=>s).ToList();
-        }
+            : base(assembly)
+        { }
 
         public ModuleFactory(Assembly[] assemblies)
-        {
-            _modules = new List<Type>();
-
-            foreach (var assembly in assemblies)
-            {
-                var moduleTypes = assembly.GetModuleTypes();
-
-                _modules = moduleTypes.Select(s=>s).ToList();
-            }
-        }
-
-        public virtual byte[] Run(string[] args, byte[] buffer = null)
-        {
-            var modules = this.GetModulesItems(args);
-
-            foreach (var item in modules)
-            {
-                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
-                {
-                    return Run(item, this, buffer);
-                }
-
-                buffer = Run(item, this, buffer);
-            }
-
-            return buffer;
-        }
-
-        private byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
-        {
-            byte[] result = null;
-
-            if(module.Module.HasRunnningControl(ModuleRunningControl.RequireArgument))
-            {
-                result = module.Module.Load(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
-            }
-            else
-            {   
-                result = module.Module.Load(input ?? module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
-            }
-
-            foreach (var option in module.Options)
-            {
-                result = (byte[])moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
-            }
-
-            //todo: dispose module.
-
-            return result;
-        }
-
-        public virtual IModule GetModule(string modulename)
-        {
-            var moduleType = GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))?.Module;
-
-            if(moduleType==null)
-            {
-                return null;
-            }
-
-            var module = (IModule)Activator.CreateInstance(moduleType);
-
-            return module;
-        }
-
-        public virtual bool HasModule(string modulename)
-        {
-            return GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))!=null;
-        }
-
-        internal IQueryable<ModuleItemResult> GetModulesAsQueryable()
-        {
-            return _modules.Select(s=> new ModuleItemResult{
-                    Module = s,
-                    Name = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute))).ModuleName
-                }).AsQueryable();
-        }
-
-        private string[] GetOptionNames(IModule module)
-        {
-            return module.GetOptionsMethods().Distinct().ToArray();
-        }
-
-        private bool HasOptions(IModule module)
-        {
-            return module.GetOptionsMethods().Distinct().Count()>0;
-        }
-
-        private Type GetOutputType(IModule module, string optionname)
-        {
-            var method = module.GetMethod(optionname);
-
-            return method.ReturnType;
-        }
-
-        private Type[] GetMethodTypesArgument(IModule module, string optionname) {
-            return module.GetMethod(optionname).GetParameters().Select(s=>s.ParameterType).ToArray();
-        }
-
-        public object Invoke(IModule module, string optionname, params object[] args)
-        {
-            var method = module.GetMethod(optionname);
-
-            var result = method.Invoke(module, args);
-
-            return result;
-        }
+            : base(assemblies)
+        { }
 
         public virtual List<ModuleItem> GetModulesItems(string[] args)
         {
@@ -162,11 +50,11 @@ namespace Fjv.Modules
                         }
                     }
 
-                    if(moduleItem.Module.HasRunnningControl(ModuleRunningControl.RequireArgument))
+                    if(moduleItem.Module.IsArgumentableModule())
                     {
                         var argument = args[i+1];
 
-                        if(this.GetModule(argument)!=null || this.OptionExist(moduleItem.Module, argument))
+                        if(this.GetModule(argument)!=null || base.OptionExist(moduleItem.Module, argument))
                         {
                             Console.WriteLine("Argument error!");
 
@@ -228,16 +116,44 @@ namespace Fjv.Modules
                 .Concat(modules.Where(m=>m.Module.HasRunnningControl(ModuleRunningControl.Output))).ToList();
         }
 
-        private bool OptionExist(IModule module, string option)
+        public virtual byte[] Run(string[] args, byte[] buffer = null)
         {
-            if(!this.HasOptions(module))
+            var modules = this.GetModulesItems(args);
+
+            foreach (var item in modules)
             {
-                return false;
+                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                {
+                    return Run(item, this, buffer);
+                }
+
+                buffer = Run(item, this, buffer);
             }
 
-            var options = this.GetOptionNames(module);
+            return buffer;
+        }
 
-            return options.Contains(option);
+        public virtual byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
+        {
+            byte[] result = null;
+
+            if(module.Module.IsArgumentableModule())
+            {
+                result = (module.Module as IArgumentableModule).Load(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
+            }
+            else
+            {   
+                result = (module.Module as IDefaultModule).Load(input ?? module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
+            }
+
+            foreach (var option in module.Options)
+            {
+                result = (byte[])moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
+            }
+
+            //todo: dispose module.
+
+            return result;
         }
     }
 }

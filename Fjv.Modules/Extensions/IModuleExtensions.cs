@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Fjv.Modules.Commons;
 
@@ -15,6 +16,11 @@ namespace Fjv.Modules.Extensions
                     yield return ((Attributes.OptionAttribute)Attribute.GetCustomAttribute(item, typeof(Attributes.OptionAttribute))).OptionName;
                 }
             }
+        }
+
+        public static bool IsArgumentableModule(this IModule module)
+        {
+            return module.GetType().GetInterfaces().Any(s=>s.Name.Equals(nameof(IArgumentableModule)));
         }
 
         public static MethodInfo GetMethod(this IModule module, string optionname) {
@@ -52,11 +58,6 @@ namespace Fjv.Modules.Extensions
             }
 
             if((runnningControl & moduleRunningControl) == ModuleRunningControl.Unique)
-            {
-                return true;
-            }
-
-            if((runnningControl & moduleRunningControl) == ModuleRunningControl.RequireArgument)
             {
                 return true;
             }

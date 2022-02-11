@@ -28,7 +28,7 @@ namespace Fjv.Modules.Test
     }
 
     [Module("*")]
-    public class TextFileSample : IModule
+    public class TextFileSample : IDefaultModule
     {
         string _text;
 
@@ -46,11 +46,6 @@ namespace Fjv.Modules.Test
             _text = File.ReadAllText(filepath);
 
             return Encoding.UTF8.GetBytes(_text);
-        }
-
-        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            throw new NotImplementedException();
         }
 
         [Option("--echo")]

@@ -10,7 +10,7 @@ namespace Fjv.Modules.Test
         [Fact]
         public void RunManyArgumnetsTestMethod()
         {
-            var args = new string[]{ "-p", "--rs", "-s", "--put", "2", "-o", "merge", "./*.txt" };
+            var args = new string[]{ "-p", "--rs", "-s", "--put", "2,3", "-o", "merge", "./*.txt" };
 
             var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
 
@@ -25,7 +25,7 @@ namespace Fjv.Modules.Test
         [Fact]
         public void RunManyArgumnetsWithUniqueExceptionTestMethod()
         {
-            var args = new string[]{ "-p", "--rs", "-s", "--put", "2", "-o", "merge", "./*.txt", "-p" };
+            var args = new string[]{ "-p", "--rs", "-s", "--put", "2,4", "-o", "merge", "./*.txt", "-p" };
 
             var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
 
@@ -36,18 +36,13 @@ namespace Fjv.Modules.Test
     }
 
     [Module("-p", Commons.ModuleRunningControl.Unique)]
-    public class PClass : IModule
+    public class PClass : IDefaultModule
     {
         public byte[] Load(byte[] input, string[] args, int index)
         {
             Console.WriteLine(nameof(PClass));
 
             return null;
-        }
-
-        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            throw new System.NotImplementedException();
         }
 
         [Option("--rs")]
@@ -58,7 +53,7 @@ namespace Fjv.Modules.Test
     }
 
     [Module("-s")]
-    public class SClass : IModule
+    public class SClass : IDefaultModule
     {
         public byte[] Load(byte[] input, string[] args, int index)
         {
@@ -67,13 +62,8 @@ namespace Fjv.Modules.Test
             return null;
         }
 
-        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            throw new System.NotImplementedException();
-        }
-
         [Option("--put")]
-        public byte[] PutOption(int value)
+        public byte[] PutOption(int value, int secondValue)
         {
             Console.WriteLine($"value: {value}");
 
@@ -82,7 +72,7 @@ namespace Fjv.Modules.Test
     }
 
     [Module("-o", Commons.ModuleRunningControl.Input)]
-    public class OClass : IModule
+    public class OClass : IDefaultModule
     {
         public byte[] Load(byte[] input, string[] args, int index)
         {
@@ -90,24 +80,13 @@ namespace Fjv.Modules.Test
 
             return null;
         }
-
-        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 
     [Module("merge", 
         Commons.ModuleRunningControl.Input | 
-        Commons.ModuleRunningControl.ControlTaker | 
-        Commons.ModuleRunningControl.RequireArgument)]
-    public class MergeClass : IModule
+        Commons.ModuleRunningControl.ControlTaker )]
+    public class MergeClass : IArgumentableModule
     {
-        public byte[] Load(byte[] input, string[] args, int index)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
         {
             Console.WriteLine(nameof(MergeClass));

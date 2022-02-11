@@ -6,7 +6,6 @@ namespace Fjv.Modules.Commons
         Input = 1,
         Output = 2,
         ControlTaker = 4,
-        RequireArgument = 8,
-        Unique = 16
+        Unique = 8
     }
 }
