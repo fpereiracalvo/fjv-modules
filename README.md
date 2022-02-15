@@ -1,8 +1,6 @@
 # General
 
-Fjv.Modules is a library that offer a pattern to bind classes and methods that will be activated by command-line argument.
-
-Put or remove modules easily and the ModuleFactory take care to find your classes inside the specified assembly or assemblies.
+Fjv.Modules help you to create command-line applications propousing a pattern to make classes as command modules that will be binded and runned in on demand manner.
 
 ```csharp
 // load module classes automatically.
@@ -126,14 +124,14 @@ public class PrintModule : IDefaultModule
 So, you can run.
 
 ```shell
-myprogram --print some_file.txt --screen -save --file copy.txt
+myprogram -print some_file.txt --screen -save --file copy.txt
 ```
 
 The byte array content of -print module is passed to the input parameter of -save module. If you like make changes into the byte array data you have entered freedom to that.
 
 ## Byte array result
 
-Each Load(...) and Option method executed can return a byte array that probably will be used as an input to the next module, like a chain reaction.
+Each Load(...) and Option method executed would return a byte array that probably will be used as an input to the next module, like a chain reaction.
 
 To illustrate this, we create the *TextProcessModule* with an option method to remove some part of the text. The other class will be *FileModule*, that will be responsible to save the input byte array to a file.
 
