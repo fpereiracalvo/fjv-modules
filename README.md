@@ -1,6 +1,6 @@
 # General
 
-Fjv.Modules help you to create command-line applications propousing a pattern to make classes as command modules that will be binded and runned in on demand manner.
+Fjv.Modules help you to create command-line applications, propousing a pattern to make classes as command modules that will be binded and runned in on demand manner.
 
 ```csharp
 // load module classes automatically.
@@ -74,7 +74,7 @@ An option is a method that can receive parameters to do some process. All method
 
 ```csharp
 [Module("-print")]
-public class PrintModule : IDefaultModule
+public class PrintModule : IArgumentableModule
 {
     CustomObject _content;
 
