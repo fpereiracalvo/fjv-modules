@@ -139,7 +139,7 @@ So, you can run.
 myprogram -print some_file.txt --screen -save --file copy.txt
 ```
 
-For the second opThe option arguments require a comma separation:
+For the second option arguments require a comma separation:
 ```shell
 myprogram -print some_file.txt --screen -save --files copyA.txt,copyB.txt
 ```
