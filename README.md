@@ -101,7 +101,7 @@ Now if we would like to save the content into a file, we need to create a new cl
 
 ```csharp
 [Module("-save")]
-public class PrintModule : IDefaultModule
+public class SaveModule : IDefaultModule
 {
     byte[] _content;
 
@@ -111,10 +111,22 @@ public class PrintModule : IDefaultModule
     }
 
     [Option("--file")]
-    public byte[] PrintScreen(string path)
+    public byte[] SaveFile(string path)
     {
         // print text on to screen.
         File.WriteAllBytes(path, _content);
+
+        return _content;
+    }
+
+    [Option("--files")]
+    public byte[] SaveFiles(string pathA, string pathB)
+    {
+        // print text on to screen file A.
+        File.WriteAllBytes(pathA, _content);
+
+        // print text on to screen file B.
+        File.WriteAllBytes(pathB, _content);
 
         return _content;
     }
@@ -127,7 +139,12 @@ So, you can run.
 myprogram -print some_file.txt --screen -save --file copy.txt
 ```
 
-The byte array content of -print module is passed to the input parameter of -save module. If you like make changes into the byte array data you have entered freedom to that.
+For the second opThe option arguments require a comma separation:
+```shell
+myprogram -print some_file.txt --screen -save --files copyA.txt,copyB.txt
+```
+
+The byte array content of -print module is passed to -save module input. If you like make changes into the byte array data you have entered freedom to that.
 
 ## Byte array result
 
