@@ -5,9 +5,9 @@ using Fjv.Modules.Attributes;
 using System.Text;
 using System.IO;
 
-namespace Fjv.Modules.Test
+namespace Fjv.Modules.Test.Wildcard
 {
-    public class ArgumentTest
+    public class WildcardArgumentTest
     {
         [Fact]
         public void EchoFileTextTest()
@@ -17,7 +17,7 @@ namespace Fjv.Modules.Test
 
             var args = new string[]{ Path.Combine(path, "Files", "helloWorld.txt"), "--echo" };
 
-            var moduleFactory = new ModuleFactory(typeof(ArgumentTest).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(WildcardArgumentTest));
 
             var buffer= moduleFactory.Run(args);
 

@@ -8,7 +8,8 @@ namespace Fjv.Modules.Extensions
 {
     public static class IModuleExtensions
     {
-        public static IEnumerable<string> GetOptionsMethods(this IModule type) {
+        public static IEnumerable<string> GetOptionsMethods(this IModule type)
+        {
             foreach(var item in type.GetType().GetMethods())
             {
                 if (item.GetCustomAttributes(typeof(Attributes.OptionAttribute), false).Length > 0)

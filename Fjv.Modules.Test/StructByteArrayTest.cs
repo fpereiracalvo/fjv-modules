@@ -7,16 +7,16 @@ using Fjv.Modules.Attributes;
 using Fjv.Modules.Extensions;
 using Xunit;
 
-namespace Fjv.Modules.Test
+namespace Fjv.Modules.Test.StructByteArray
 {
-    public class StructByteArrayTest
+    public class StructByteArrayPassedAsInputTest
     {
         [Fact]
         public void PassingStructToModuleTest()
         {
             var args = new string[]{ "-transmit", "Hello world!", "-receive", "--print-screen" };
 
-            var moduleFactory = new ModuleFactory(typeof(StructByteArrayTest).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(StructByteArrayPassedAsInputTest));
 
             var buffer= moduleFactory.Run(args);
         }

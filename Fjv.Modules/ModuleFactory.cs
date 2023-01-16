@@ -17,6 +17,10 @@ namespace Fjv.Modules
             : base(assemblies)
         { }
 
+        public ModuleFactory(Type scopedToNamespace)
+            : base(scopedToNamespace)
+        { }
+
         public virtual List<ModuleItem> GetModulesItems(string[] args)
         {
             var modules = new List<ModuleItem>();
@@ -40,6 +44,8 @@ namespace Fjv.Modules
 
                 if(moduleItem.Module!=null)
                 {
+                    var moduleOptions = GetOptionsAsQueriable(moduleItem.Module);
+
                     if(moduleItem.Module.HasRunnningControl(ModuleRunningControl.Unique))
                     {
                         var hasModule = modules.Where(s=>s.Module.GetType().Equals(moduleItem.Module.GetType())).Count()>0;
@@ -54,7 +60,7 @@ namespace Fjv.Modules
                     {
                         var argument = args[i+1];
 
-                        if(this.GetModule(argument)!=null || base.OptionExist(moduleItem.Module, argument))
+                        if(this.GetModule(argument)!=null || moduleOptions.Any(s=>s.Name.Equals(argument)))
                         {
                             Console.WriteLine("Argument error!");
 
@@ -66,32 +72,39 @@ namespace Fjv.Modules
                         moduleItem.ModuleArgument = System.Text.Encoding.UTF8.GetBytes(argument);
                     }
 
-                    if(this.HasOptions(moduleItem.Module))
+                    if(moduleOptions.Any())
                     {
-                        var options = this.GetOptionNames(moduleItem.Module);
-
                         for (var y = i+1; y < args.Length; y++)
                         {
-                            if(options.Contains(args[y]))
+                            var optionResult = moduleOptions.SingleOrDefault(s=>s.Name.Equals(args[y]));
+
+                            if(optionResult!=null)
                             {
-                                var optionItem = new OptionItem();
+                                var optionItem = new OptionItem(){
+                                    Name = optionResult.Name
+                                };
 
-                                optionItem.Name = args[y];
-                                var argumentTypes = this.GetMethodTypesArgument(moduleItem.Module, optionItem.Name);
-
-
-                                if(argumentTypes.Length > 1)
+                                if(optionResult.ArgumentsTypes.Length > 1)
                                 {
                                     y++;
                                     var index=0;
-                                    var values = args[y].Split(',');
-                                    optionItem.Arguments = argumentTypes.Select(s=>Convert.ChangeType(values[index++], s)).ToArray();
+
+                                    if(optionResult.SeparatedArguments)
+                                    {
+                                        optionItem.Arguments = optionResult.ArgumentsTypes.Select(s=>Convert.ChangeType(args[y + index++], s)).ToArray();
+                                        y++;
+                                    }
+                                    else
+                                    {
+                                        var values = args[y].Split(',');
+                                        optionItem.Arguments = optionResult.ArgumentsTypes.Select(s=>Convert.ChangeType(values[index++], s)).ToArray();
+                                    }
                                 }
-                                else if(argumentTypes.Any())
+                                else if(optionResult.ArgumentsTypes.Any())
                                 {
                                     y++;
 
-                                    optionItem.Arguments = new object[]{ Convert.ChangeType(args[y], argumentTypes.SingleOrDefault()) };
+                                    optionItem.Arguments = new object[]{ Convert.ChangeType(args[y], optionResult.ArgumentsTypes.SingleOrDefault()) };
                                 }
 
                                 i=y;
@@ -142,7 +155,7 @@ namespace Fjv.Modules
                 result = (module.Module as IArgumentableModule).Load(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
             }
             else
-            {   
+            {
                 result = (module.Module as IDefaultModule).Load(input ?? module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
             }
 

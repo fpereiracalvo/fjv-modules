@@ -9,12 +9,10 @@ namespace Fjv.Modules
 {
     public abstract class ModuleFactoryBase
     {
-        List<Type> _modules;
+        List<Type> _modules = new List<Type>();
         
         public ModuleFactoryBase(Assembly assembly)
         {
-            _modules = new List<Type>();
-
             var moduleTypes = assembly.GetModuleTypes();
 
             _modules = moduleTypes.Select(s=>s).ToList();
@@ -22,14 +20,19 @@ namespace Fjv.Modules
 
         public ModuleFactoryBase(Assembly[] assemblies)
         {
-            _modules = new List<Type>();
-
             foreach (var assembly in assemblies)
             {
                 var moduleTypes = assembly.GetModuleTypes();
 
                 _modules = moduleTypes.Select(s=>s).ToList();
             }
+        }
+
+        public ModuleFactoryBase(Type scopedToNamespace)
+        {
+            var moduleTypes = scopedToNamespace.GetModuleTypes();
+
+            _modules = moduleTypes.Select(s=>s).ToList();
         }
 
         public virtual IModule GetModule(string modulename)
@@ -53,31 +56,30 @@ namespace Fjv.Modules
 
         internal IQueryable<ModuleItemResult> GetModulesAsQueryable()
         {
-            return _modules.Select(s=> new ModuleItemResult{
+            return _modules.Select(s=> {
+                var attr = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute)));
+                
+                return new ModuleItemResult{
                     Module = s,
-                    Name = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute))).ModuleName
+                    Name = attr.ModuleName
+                };
+            }).AsQueryable();
+        }
+
+        internal IQueryable<OptionItemResult> GetOptionsAsQueriable(IModule module)
+        {
+            return module.GetType().GetMethods()
+                .Where(s=>s.GetCustomAttributes(typeof(Attributes.OptionAttribute), false).Any())
+                .Select(s=>{
+                    var attr = ((Attributes.OptionAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.OptionAttribute)));
+                    var model = new OptionItemResult{
+                        ArgumentsTypes = module.GetMethod(attr.OptionName).GetParameters().Select(s=>s.ParameterType).ToArray(),
+                        Name = attr.OptionName,
+                        SeparatedArguments = attr.SeparatedArgument
+                    };
+                    
+                    return model;
                 }).AsQueryable();
-        }
-
-        public virtual string[] GetOptionNames(IModule module)
-        {
-            return module.GetOptionsMethods().Distinct().ToArray();
-        }
-
-        public virtual bool HasOptions(IModule module)
-        {
-            return module.GetOptionsMethods().Distinct().Count()>0;
-        }
-
-        public virtual Type GetOutputType(IModule module, string optionname)
-        {
-            var method = module.GetMethod(optionname);
-
-            return method.ReturnType;
-        }
-
-        public virtual Type[] GetMethodTypesArgument(IModule module, string optionname) {
-            return module.GetMethod(optionname).GetParameters().Select(s=>s.ParameterType).ToArray();
         }
 
         public virtual object Invoke(IModule module, string optionname, params object[] args)
@@ -87,18 +89,6 @@ namespace Fjv.Modules
             var result = method.Invoke(module, args);
 
             return result;
-        }
-
-        public virtual bool OptionExist(IModule module, string option)
-        {
-            if(!this.HasOptions(module))
-            {
-                return false;
-            }
-
-            var options = this.GetOptionNames(module);
-
-            return options.Contains(option);
         }
     }
 }

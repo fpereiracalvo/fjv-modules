@@ -3,16 +3,16 @@ using System.Linq;
 using Fjv.Modules.Attributes;
 using Xunit;
 
-namespace Fjv.Modules.Test
+namespace Fjv.Modules.Test.ManyArguments
 {
-    public class ManyArgumentsTest
+    public class ManyArgumentsCombinedTest
     {
         [Fact]
         public void RunManyArgumnetsTestMethod()
         {
             var args = new string[]{ "-p", "--rs", "-s", "--put", "2,3", "-o", "merge", "./*.txt" };
 
-            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsCombinedTest));
 
             var buffer= moduleFactory.Run(args);
 
@@ -27,7 +27,7 @@ namespace Fjv.Modules.Test
         {
             var args = new string[]{ "-p", "--rs", "-s", "--put", "2,4", "-o", "merge", "./*.txt", "-p" };
 
-            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsCombinedTest));
 
             Assert.Throws<Exception>(new Action(()=>{
                 var buffer = moduleFactory.Run(args);
@@ -93,7 +93,7 @@ namespace Fjv.Modules.Test
             
             var auxArgs = args.Take(index).ToArray().Concat(args.Skip(index+2).ToArray()).ToArray();
 
-            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsTest).Assembly);
+            var moduleFactory = new ModuleFactory(typeof(ManyArgumentsCombinedTest));
 
             for (var i = 0; i < 3; i++)
             {

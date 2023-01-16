@@ -2,10 +2,10 @@ using System;
 
 namespace Fjv.Modules.Commons
 {
-    internal class ModuleItemResult
+    internal class OptionItemResult
     {
-        public Type Module { get; set; }
         public string Name { get; set; }
         public bool SeparatedArguments { get; set; }
+        public Type[] ArgumentsTypes { get; set; }
     }
 }
