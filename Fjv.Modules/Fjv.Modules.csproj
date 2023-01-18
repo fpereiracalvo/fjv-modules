@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Fjv.Modules</PackageId>
-    <Version>1.4.0</Version>
+    <Version>1.5.0</Version>
     <Authors>Francisco Pereira Calvo</Authors>
     <Company>Fjv - Chile</Company>
     <PackageProjectURL>https://github.com/fpereiracalvo</PackageProjectURL>
     <RepositoryURL>https://github.com/fpereiracalvo/fjv-modules.git</RepositoryURL>
-    <PackageLicenseUrl>https://github.com/fpereiracalvo/fjv-modules/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/fpereiracalvo/fjv-modules/blob/main/LICENSE</PackageLicense>
     <PackageDescription>Command-line manager module factory</PackageDescription>
   </PropertyGroup>
 

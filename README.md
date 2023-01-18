@@ -144,6 +144,14 @@ For the second option arguments require a comma separation:
 myprogram -print some_file.txt --screen -save --files copyA.txt,copyB.txt
 ```
 
+To get arguments without use a comma separation, just set true into separatedArgument parameter on Option attribute.
+
+```csharp
+[Option("--files", true)]
+public byte[] SaveFiles(string pathA, string pathB)
+//...
+```
+
 The byte array content of -print module is passed to -save module input. If you like make changes into the byte array data you have entered freedom to that.
 
 ## Byte array result
@@ -201,7 +209,7 @@ You can use object inside your modules if you'll like, but the output always mus
 
 # Program sample
 
-The most basic implementation of the module factory it's look like:
+ModuleFactory receives an Assembly, list of assemblies, and Type as paramater.
 
 ```csharp
 using System;
@@ -227,28 +235,25 @@ namespace SomeExample
 }
 ```
 
-Or the next below to take the modules from differents assemblies:
 ```csharp
-using System;
-using System.Linq;
-using Fjv.Modules;
+            //intentionaly omitted.
 
-namespace SomeExample
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            if(!args.Any())
-            {
-                return;
-            }
-            
             var moduleFactory = new ModuleFactory(new Assembly[]{
                 typeof(Program).Assembly,
                 typeof(CustomLibrary).Assembly,
                 typeof(OtherOne).Assembly
             });
+
+            var buffer = moduleFactory.Run(args);
+        }
+    }
+}
+```
+
+```csharp
+            //intentionaly omitted.
+
+            var moduleFactory = new ModuleFactory(typeof(MyClass));
 
             var buffer = moduleFactory.Run(args);
         }
