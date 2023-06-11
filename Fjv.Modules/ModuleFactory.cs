@@ -9,16 +9,16 @@ namespace Fjv.Modules
 {
     public partial class ModuleFactory : ModuleFactoryBase
     {
-        public ModuleFactory(Assembly assembly)
-            : base(assembly)
+        public ModuleFactory(Assembly assembly, List<ModuleOptions> options = null)
+            : base(assembly, options)
         { }
 
-        public ModuleFactory(Assembly[] assemblies)
-            : base(assemblies)
+        public ModuleFactory(Assembly[] assemblies, List<ModuleOptions> options = null)
+            : base(assemblies, options)
         { }
 
-        public ModuleFactory(Type scopedToNamespace)
-            : base(scopedToNamespace)
+        public ModuleFactory(Type scopedToNamespace, List<ModuleOptions> options = null)
+            : base(scopedToNamespace, options)
         { }
 
         public virtual List<ModuleItem> GetModulesItems(string[] args)

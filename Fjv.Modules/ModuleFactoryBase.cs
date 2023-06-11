@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Fjv.Modules.Commons;
@@ -9,16 +10,24 @@ namespace Fjv.Modules
 {
     public abstract class ModuleFactoryBase
     {
+        List<ModuleOptions> _options;
         List<Type> _modules = new List<Type>();
+
+        private ModuleFactoryBase(List<ModuleOptions> options)
+        {
+            _options = options ?? new List<ModuleOptions>();
+        }
         
-        public ModuleFactoryBase(Assembly assembly)
+        public ModuleFactoryBase(Assembly assembly, List<ModuleOptions> options)
+            : this(options)
         {
             var moduleTypes = assembly.GetModuleTypes();
 
             _modules = moduleTypes.Select(s=>s).ToList();
         }
 
-        public ModuleFactoryBase(Assembly[] assemblies)
+        public ModuleFactoryBase(Assembly[] assemblies, List<ModuleOptions> options)
+            : this(options)
         {
             foreach (var assembly in assemblies)
             {
@@ -28,7 +37,8 @@ namespace Fjv.Modules
             }
         }
 
-        public ModuleFactoryBase(Type scopedToNamespace)
+        public ModuleFactoryBase(Type scopedToNamespace, List<ModuleOptions> options)
+            : this(options)
         {
             var moduleTypes = scopedToNamespace.GetModuleTypes();
 
@@ -58,10 +68,12 @@ namespace Fjv.Modules
         {
             return _modules.Select(s=> {
                 var attr = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute)));
+
+                var option = _options.FirstOrDefault(x=>x.ModuleType.FullName.Equals(s.FullName)) ?? new ModuleOptions();
                 
                 return new ModuleItemResult{
                     Module = s,
-                    Name = attr.ModuleName
+                    Name = option.GetName(attr.ModuleName)
                 };
             }).AsQueryable();
         }
