@@ -64,7 +64,7 @@ namespace Fjv.Modules
             return this.GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))!=null;
         }
 
-        internal IQueryable<ModuleItemResult> GetModulesAsQueryable()
+        public IQueryable<ModuleItemResult> GetModulesAsQueryable()
         {
             return _modules.Select(s=> {
                 var attr = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute)));
@@ -78,7 +78,7 @@ namespace Fjv.Modules
             }).AsQueryable();
         }
 
-        internal IQueryable<OptionItemResult> GetOptionsAsQueriable(IModule module)
+        public IQueryable<OptionItemResult> GetOptionsAsQueriable(IModule module)
         {
             return module.GetType().GetMethods()
                 .Where(s=>s.GetCustomAttributes(typeof(Attributes.OptionAttribute), false).Any())

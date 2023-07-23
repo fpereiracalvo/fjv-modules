@@ -2,7 +2,7 @@ using System;
 
 namespace Fjv.Modules.Commons
 {
-    internal class OptionItemResult
+    public class OptionItemResult
     {
         public string Name { get; set; }
         public bool SeparatedArguments { get; set; }
