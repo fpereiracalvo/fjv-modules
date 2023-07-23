@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fjv.Modules.DependencyInjection
 {
-    public class ModuleFactory : Fjv.Modules.ModuleFactory
+    public class ModuleFactory : Fjv.Modules.ModuleFactory, IModuleFactory
     {
         IServiceProvider _service;
 

@@ -1,55 +1,63 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Fjv.Modules.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
-namespace Fjv.Modules.DependencyInjection;
-public static class ModuleFactoryDependencyInjection
+namespace Fjv.Modules.DependencyInjection
 {
-    public static void AddModuleFactory(this IServiceCollection service, Assembly assembly, List<ModuleOptions> options = null)
+    public static class ModuleFactoryDependencyInjection
     {
-        var modules = assembly.GetModuleTypes();
-
-        modules.ToList().ForEach(type=>service.AddScoped(type));
-
-        service.AddScoped<ModuleFactoryAssemblyConfiguration>((s)=>{
-            return new ModuleFactoryAssemblyConfiguration {
-                Assembly = assembly,
-                Options = options
-            };
-        });
-        service.AddScoped<ModuleFactory>();
-    }
-
-    public static void AddModuleFactory(this IServiceCollection service, Assembly[] assemblies, List<ModuleOptions> options = null)
-    {
-        foreach (var assembly in assemblies)
+        public static void AddModuleFactory(this IServiceCollection service, Assembly assembly, List<ModuleOptions> options = null)
         {
             var modules = assembly.GetModuleTypes();
 
             modules.ToList().ForEach(type=>service.AddScoped(type));
+
+            service.AddScoped<ModuleFactoryAssemblyConfiguration>((s)=>{
+                return new ModuleFactoryAssemblyConfiguration {
+                    Assembly = assembly,
+                    Options = options
+                };
+            });
+
+            service.AddScoped<IModuleFactory, ModuleFactory>();
         }
 
-        service.AddScoped<ModuleFactoryAssembliesConfiguration>((s)=>{
-            return new ModuleFactoryAssembliesConfiguration{
-                 Assemblies = assemblies,
-                Options = options
-            };
-        });
-        service.AddScoped<ModuleFactory>();
-    }
+        public static void AddModuleFactory(this IServiceCollection service, Assembly[] assemblies, List<ModuleOptions> options = null)
+        {
+            foreach (var assembly in assemblies)
+            {
+                var modules = assembly.GetModuleTypes();
 
-    public static void AddModuleFactory(this IServiceCollection service, Type scopedToNamespace, List<ModuleOptions> options = null)
-    {
-        var modules = scopedToNamespace.GetModuleTypes();
+                modules.ToList().ForEach(type=>service.AddScoped(type));
+            }
 
-        modules.ToList().ForEach(type=>service.AddScoped(type));
+            service.AddScoped<ModuleFactoryAssembliesConfiguration>((s)=>{
+                return new ModuleFactoryAssembliesConfiguration{
+                     Assemblies = assemblies,
+                    Options = options
+                };
+            });
 
-        service.AddScoped<ModuleFactoryNamespaceScopedConfiguration>((s)=>{
-            return new ModuleFactoryNamespaceScopedConfiguration{
-                 ScopedNamespaceType = scopedToNamespace,
-                Options = options
-            };
-        });
-        service.AddScoped<ModuleFactory>();
+            service.AddScoped<IModuleFactory, ModuleFactory>();
+        }
+
+        public static void AddModuleFactory(this IServiceCollection service, Type scopedToNamespace, List<ModuleOptions> options = null)
+        {
+            var modules = scopedToNamespace.GetModuleTypes();
+
+            modules.ToList().ForEach(type=>service.AddScoped(type));
+
+            service.AddScoped<ModuleFactoryNamespaceScopedConfiguration>((s)=>{
+                return new ModuleFactoryNamespaceScopedConfiguration{
+                     ScopedNamespaceType = scopedToNamespace,
+                    Options = options
+                };
+            });
+            
+            service.AddScoped<IModuleFactory, ModuleFactory>();
+        }
     }
 }

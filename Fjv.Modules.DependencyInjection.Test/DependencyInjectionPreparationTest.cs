@@ -21,7 +21,7 @@ public class DependencyInjectionPreparationTest
     {
         var args = new string[]{ "-m", "--sa", "message", "color", "--nsa", "message,color" };
 
-        var moduleFactory = _service.GetService<ModuleFactory>();
+        var moduleFactory = _service.GetService<IModuleFactory>();
 
         var buffer = moduleFactory.Run(args);
 

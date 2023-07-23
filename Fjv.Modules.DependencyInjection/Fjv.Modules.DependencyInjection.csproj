@@ -1,9 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Fjv.Modules.DependencyInjection</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Francisco Pereira Calvo</Authors>
+    <Company>Fjv - Chile</Company>
+    <PackageProjectURL>https://github.com/fpereiracalvo</PackageProjectURL>
+    <RepositoryURL>https://github.com/fpereiracalvo/fjv-modules.git</RepositoryURL>
+    <PackageLicense>https://github.com/fpereiracalvo/fjv-modules/blob/main/LICENSE</PackageLicense>
+    <PackageDescription>Dependency injection for command-line manager module factory</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

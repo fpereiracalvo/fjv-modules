@@ -1,6 +1,7 @@
 
 Fjv.Modules is a library to create clean command-line applications.
 
+Default use
 ```csharp
 var _args = Environment.GetCommandLineArgs().Skip(1).ToArray(); // skiping argument on .Net6.
 
@@ -8,6 +9,17 @@ var factory = new ModuleFactory(typeof(Program).Assembly);
 
 factory.Run(_args);
 ```
+
+With dependency injection
+```csharp
+using Fjv.Modules.DependencyInjection;
+
+//intentionally omitted.
+
+services.AddModuleFactory(typeof(Program).Assembly);
+```
+
+Configure a IModuleFactory injection.
 
 # Getting started
 

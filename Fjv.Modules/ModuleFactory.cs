@@ -7,7 +7,7 @@ using Fjv.Modules.Extensions;
 
 namespace Fjv.Modules
 {
-    public partial class ModuleFactory : ModuleFactoryBase
+    public partial class ModuleFactory : ModuleFactoryBase, IModuleFactory
     {
         public ModuleFactory(Assembly assembly, List<ModuleOptions> options = null)
             : base(assembly, options)
