@@ -1,5 +1,5 @@
 
-Fjv.Modules es a library to create clean command-line applications.
+Fjv.Modules is a library to create clean command-line applications.
 
 ```csharp
 var _args = Environment.GetCommandLineArgs().Skip(1).ToArray(); // skiping argument on .Net6.
@@ -11,8 +11,8 @@ factory.Run(_args);
 
 # Getting started
 
-Install the library from NuGet: https://www.nuget.org/packages/Fjv.Modules
-Get the source code from GitHub: https://github.com/fpereiracalvo/fjv-modules
+- Install the library from NuGet: https://www.nuget.org/packages/Fjv.Modules
+- Get the source code from GitHub: https://github.com/fpereiracalvo/fjv-modules
 
 # How to use
 
