@@ -22,7 +22,7 @@ namespace Fjv.Modules.DependencyInjection
                 };
             });
 
-            service.AddScoped<IModuleFactory, ModuleFactory>();
+            AddScopedModuleFactory(service);
         }
 
         public static void AddModuleFactory(this IServiceCollection service, Assembly[] assemblies, List<ModuleOptions> options = null)
@@ -41,7 +41,7 @@ namespace Fjv.Modules.DependencyInjection
                 };
             });
 
-            service.AddScoped<IModuleFactory, ModuleFactory>();
+            AddScopedModuleFactory(service);
         }
 
         public static void AddModuleFactory(this IServiceCollection service, Type scopedToNamespace, List<ModuleOptions> options = null)
@@ -57,6 +57,11 @@ namespace Fjv.Modules.DependencyInjection
                 };
             });
             
+            AddScopedModuleFactory(service);
+        }
+
+        private static void AddScopedModuleFactory(IServiceCollection service)
+        {
             service.AddScoped<IModuleFactory, ModuleFactory>();
         }
     }
