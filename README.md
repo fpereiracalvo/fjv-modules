@@ -5,12 +5,12 @@ Default use
 ```csharp
 var _args = Environment.GetCommandLineArgs().Skip(1).ToArray(); // skiping argument on .Net6.
 
-var factory = new ModuleFactory(typeof(Program).Assembly);
+IModuleFactory factory = new ModuleFactory(typeof(Program).Assembly);
 
 factory.Run(_args);
 ```
 
-With dependency injection
+With dependency injection add a scope of IModuleFactory.
 ```csharp
 using Fjv.Modules.DependencyInjection;
 
@@ -18,8 +18,6 @@ using Fjv.Modules.DependencyInjection;
 
 services.AddModuleFactory(typeof(Program).Assembly);
 ```
-
-Configure a IModuleFactory injection.
 
 # Getting started
 
@@ -31,7 +29,7 @@ Configure a IModuleFactory injection.
 Yo need a module factory instance to scan an assembly
 ```csharp
 // load module classes automatically.
-ModuleFactory moduleFactory = new ModuleFactory(typeof(Program).Assembly);
+IModuleFactory moduleFactory = new ModuleFactory(typeof(Program).Assembly);
 ```
 
 assemblies
@@ -48,7 +46,7 @@ or a class
 ```csharp
 //intentionaly omitted.
 
-var moduleFactory = new ModuleFactory(typeof(MyClass));
+IModuleFactory moduleFactory = new ModuleFactory(typeof(MyClass));
 ```
 
 and run it passing the arguments. In .Net 6 you must skip the first one.
@@ -132,7 +130,7 @@ See more in Samples folder.
 You can add thirparty module libraries and set a new name to use into your console app.
 
 ```csharp
-var moduleFactory = new ModuleFactory(new Assembly[]{
+IModuleFactory moduleFactory = new ModuleFactory(new Assembly[]{
     typeof(Program).Assembly,
     typeof(CustomLibrary).Assembly,
     typeof(OtherOnde).Assembly
@@ -144,4 +142,22 @@ var moduleFactory = new ModuleFactory(new Assembly[]{
 });
 
 var buffer= moduleFactory.Run(args);
+```
+
+Add a scope of IModuleFactory in the same manner using dependency injection extension.
+```csharp
+using Fjv.Modules.DependencyInjection;
+
+//intentionally omitted.
+
+services.AddModuleFactory(new Assembly[]{
+    typeof(Program).Assembly,
+    typeof(CustomLibrary).Assembly,
+    typeof(OtherOnde).Assembly
+}, new List<ModuleOptions>{
+    new ModuleOptions {
+        ModuleType = typeof(ThirdPartyModule),
+        Name = "-my-option-module"  //set new name
+    }
+});
 ```
