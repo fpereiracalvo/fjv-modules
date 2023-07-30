@@ -31,8 +31,8 @@ namespace HostWebClient.Modules
             return _bytes;
         }
 
-        [Option("--e")]
-        public byte[] GetText(string element)
+        [Option("--ec")]
+        public byte[] GetElementContent(string element)
         {
             var pattern = $"<{element}>(.*?)</{element}>";
 
