@@ -24,7 +24,16 @@ namespace HostWebClient.Modules
 
             var task = _httpClient.GetByteArrayAsync(url);
 
-            task.Wait();
+            try
+            {
+                task.Wait();
+            }
+            catch (Exception ex)
+            {
+                //end console with exit 1
+                Console.WriteLine(ex.Message);
+                Environment.Exit(1);
+            }
 
             return task.Result;
         }

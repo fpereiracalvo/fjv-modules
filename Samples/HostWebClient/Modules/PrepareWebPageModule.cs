@@ -11,6 +11,8 @@ namespace HostWebClient.Modules
     [Module("-p")]
     public class PrepareWebPageModule : IDefaultModule
     {
+        byte[] _url = new byte[]{};
+
         public byte[] Load(byte[] input, string[] args, int index)
         {
             return new byte[]{};
@@ -19,7 +21,9 @@ namespace HostWebClient.Modules
         [Option("--a")]
         public byte[] SetUrl(string url)
         {
-            return Encoding.UTF8.GetBytes(url);
+            _url = Encoding.UTF8.GetBytes(url);
+
+            return _url;
         }
     }
 }
