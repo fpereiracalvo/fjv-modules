@@ -21,7 +21,9 @@ services.AddModuleFactory(typeof(Program).Assembly);
 
 # Getting started
 
-- Install the library from NuGet: https://www.nuget.org/packages/Fjv.Modules
+- Install the library from NuGet:
+  - https://www.nuget.org/packages/Fjv.Modules
+  - https://www.nuget.org/packages/Fjv.Modules.DependencyInjection
 - Get the source code from GitHub: https://github.com/fpereiracalvo/fjv-modules
 
 # How to use
