@@ -11,6 +11,8 @@ namespace Fjv.Modules
         List<ModuleItem> GetModulesItems(string[] args);
         byte[] Run(string[] args, byte[] buffer = null);
         byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input);
+        Task<byte[]> RunAsync(string[] args, byte[] buffer = null);
+        Task<byte[]> RunAsync(ModuleItem module, ModuleFactory moduleFactory, byte[] input);
         IModule GetModule(string modulename);
         bool HasModule(string modulename);
         IQueryable<ModuleItemResult> GetModulesAsQueryable();

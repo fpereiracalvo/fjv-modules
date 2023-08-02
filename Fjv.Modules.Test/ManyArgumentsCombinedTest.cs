@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Fjv.Modules.Attributes;
+using Fjv.Modules.Exceptions;
 using Xunit;
 
 namespace Fjv.Modules.Test.ManyArguments
@@ -28,10 +29,12 @@ namespace Fjv.Modules.Test.ManyArguments
             var args = new string[]{ "-p", "--rs", "-s", "--put", "2,4", "-o", "merge", "./*.txt", "-p" };
 
             var moduleFactory = new ModuleFactory(typeof(ManyArgumentsCombinedTest));
-
-            Assert.Throws<Exception>(new Action(()=>{
+            
+            var exception = Assert.Throws<ModulesException>(()=>{
                 var buffer = moduleFactory.Run(args);
-            }));
+            });
+
+            Assert.Equal("The module -p doesn't allow attach one more than exist.", exception.Message);
         }
     }
 

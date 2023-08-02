@@ -11,7 +11,7 @@ namespace Fjv.Modules.Extensions
         {
             var types = typeOfNamespace.Assembly.GetTypes().Where(s=>!string.IsNullOrWhiteSpace(s.Namespace)).ToList();
 
-            foreach(Type type in types.Where(s=>s.Namespace.Contains(typeOfNamespace.Namespace)))
+            foreach(Type type in types.Where(s=>s.Namespace.Equals(typeOfNamespace.Namespace)))
             {
                 if (type.GetCustomAttributes(typeof(Attributes.ModuleAttribute), false).Length > 0)
                 {

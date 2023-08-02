@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Fjv.Modules.Commons;
+using Fjv.Modules.Exceptions;
 using Fjv.Modules.Extensions;
 
 namespace Fjv.Modules
@@ -52,7 +54,7 @@ namespace Fjv.Modules
 
                         if(hasModule)
                         {
-                            throw new Exception($"The module {item} doesn't allow attach one more than exist.");
+                            throw new ModulesException($"The module {item} doesn't allow attach one more than exist.");
                         }
                     }
 
@@ -162,6 +164,46 @@ namespace Fjv.Modules
             foreach (var option in module.Options)
             {
                 result = (byte[])moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
+            }
+
+            //todo: dispose module.
+
+            return result;
+        }
+
+        public virtual async Task<byte[]> RunAsync(string[] args, byte[] buffer = null)
+        {
+            var modules = this.GetModulesItems(args);
+
+            foreach (var item in modules)
+            {
+                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                {
+                    return await RunAsync(item, this, buffer);
+                }
+
+                buffer = await RunAsync(item, this, buffer);
+            }
+
+            return buffer;
+        }
+
+        public virtual async Task<byte[]> RunAsync(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
+        {
+            byte[] result = null;
+
+            if(module.Module.IsArgumentableModule())
+            {
+                result = await (module.Module as IArgumentableModuleAsync).LoadAsync(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
+            }
+            else
+            {
+                result = await (module.Module as IDefaultModuleAsync).LoadAsync(input ?? module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
+            }
+
+            foreach (var option in module.Options)
+            {
+                result = await (Task<byte[]>)moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
             }
 
             //todo: dispose module.

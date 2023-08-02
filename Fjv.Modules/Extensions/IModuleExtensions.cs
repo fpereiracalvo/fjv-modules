@@ -21,7 +21,7 @@ namespace Fjv.Modules.Extensions
 
         public static bool IsArgumentableModule(this IModule module)
         {
-            return module.GetType().GetInterfaces().Any(s=>s.Name.Equals(nameof(IArgumentableModule)));
+            return module.GetType().GetInterfaces().Any(s=>s.Name.Equals(nameof(IArgumentableModule)) || s.Name.Equals(nameof(IArgumentableModuleAsync)));
         }
 
         public static MethodInfo GetMethod(this IModule module, string optionname) {
