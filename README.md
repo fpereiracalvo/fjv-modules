@@ -26,6 +26,9 @@ services.AddModuleFactory(typeof(Program).Assembly);
   - https://www.nuget.org/packages/Fjv.Modules.DependencyInjection
 - Get the source code from GitHub: https://github.com/fpereiracalvo/fjv-modules
 
+- Donations
+If you think Fjv.Modules has been useful to you, I invite you to make a donation in the amount you want on [Paypal](https://paypal.me/fpereiracalvo?country.x=CL&locale.x=en_US). I will be very grateful for your contribution.
+
 # How to use
 
 Yo need a module factory instance to scan an assembly
