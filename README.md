@@ -76,6 +76,7 @@ The next sample shows how whould define a simple argumentable module.
 
 ```csharp
 [Module("-print")]
+[ModuleHelp("Print module help message.")]
 public class PrintModule : IArgumentableModule
 {
     string _content;
@@ -88,6 +89,7 @@ public class PrintModule : IArgumentableModule
     }
 
     [Option("--screen")]
+    [OptionHelp("Screen option help message.")]
     public byte[] PrintScreen()
     {
         // print text on to screen.
@@ -101,6 +103,8 @@ public class PrintModule : IArgumentableModule
 And how to use:
 
 > myconsoleapp -print myfile.txt --screen
+
+You can add help message to all modules and options. Those can show by GetHelp by module factory. See Sample projects.
 
 The next sample is how to use a default module.
 
