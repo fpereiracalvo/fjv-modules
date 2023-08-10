@@ -7,6 +7,7 @@ namespace Fjv.Modules
     {
         public Type ModuleType { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
         internal string GetName(string @default)
         {

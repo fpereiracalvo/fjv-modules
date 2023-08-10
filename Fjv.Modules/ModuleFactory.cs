@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,8 @@ namespace Fjv.Modules
 {
     public partial class ModuleFactory : ModuleFactoryBase, IModuleFactory
     {
+        readonly string _wildcard = "*";
+
         public ModuleFactory(Assembly assembly, List<ModuleOptions> options = null)
             : base(assembly, options)
         { }
@@ -37,15 +40,21 @@ namespace Fjv.Modules
                 var item = args[i];
 
                 moduleItem.Module = this.GetModule(item);
+                ModuleItemResult moduleItemResult = this.GetModelItemResult(item);
 
                 if(moduleItem.Module == null)
                 {
-                    moduleItem.Module = this.GetModule("*");
+                    moduleItem.Module = this.GetModule(_wildcard);
+                    moduleItemResult = this.GetModelItemResult(_wildcard);
+
                     moduleItem.ModuleArgument = moduleItem.Module != null ? System.Text.Encoding.UTF8.GetBytes(args[i]) : null;
                 }
 
                 if(moduleItem.Module!=null)
                 {
+                    moduleItem.Name = moduleItemResult.Name;
+                    moduleItem.Message = moduleItemResult.Message;
+
                     var moduleOptions = GetOptionsAsQueriable(moduleItem.Module);
 
                     if(moduleItem.Module.HasRunnningControl(ModuleRunningControl.Unique))
@@ -83,7 +92,8 @@ namespace Fjv.Modules
                             if(optionResult!=null)
                             {
                                 var optionItem = new OptionItem(){
-                                    Name = optionResult.Name
+                                    Name = optionResult.Name,
+                                    Message = optionResult.Message,
                                 };
 
                                 if(optionResult.ArgumentsTypes.Length > 1)
@@ -150,9 +160,9 @@ namespace Fjv.Modules
 
         public virtual byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
         {
-            byte[] result = null;
+            byte[] result;
 
-            if(module.Module.IsArgumentableModule())
+            if (module.Module.IsArgumentableModule())
             {
                 result = (module.Module as IArgumentableModule).Load(input, module.ModuleArgument, module.GlobalArguments, module.IndexArgument);
             }
@@ -190,7 +200,7 @@ namespace Fjv.Modules
 
         public virtual async Task<byte[]> RunAsync(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
         {
-            byte[] result = null;
+            byte[] result;
 
             if(module.Module.IsArgumentableModule())
             {
@@ -209,6 +219,36 @@ namespace Fjv.Modules
             //todo: dispose module.
 
             return result;
+        }
+
+        public virtual string GetHelp(string[] args)
+        {
+            var modules = this.GetModulesItems(args).Distinct().ToList();
+
+            var stringBuilder = new StringBuilder();
+
+            modules.Where(s=>!string.IsNullOrWhiteSpace(s.Message)).ToList().ForEach(m=> {
+                stringBuilder.AppendLine($"{m.Name}\t{m.Message}");
+
+                m.Options.Distinct().ToList().ForEach(o=>stringBuilder.AppendLine($"\t{o.Name}\t{o.Message}"));
+            });
+
+            return stringBuilder.ToString();
+        }
+
+        public virtual string GetHelp()
+        {
+            var modules = this.GetModulesAsQueryable().ToList();
+
+            var stringBuilder = new StringBuilder();
+
+            modules.Where(s=>!string.IsNullOrWhiteSpace(s.Message)).OrderBy(s=>s.Name).ToList().ForEach(m=> {
+                stringBuilder.AppendLine($"{m.Name}\t{m.Message}");
+
+                this.GetOptionsAsQueriable(m.Module).OrderBy(s=>s.Name).ToList().ForEach(o=>stringBuilder.AppendLine($"\t{o.Name}\t{o.Message}"));
+            });
+
+            return stringBuilder.ToString();
         }
     }
 }

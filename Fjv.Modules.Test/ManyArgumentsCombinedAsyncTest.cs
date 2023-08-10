@@ -16,7 +16,7 @@ namespace Fjv.Modules.Test.ManyArgumentsAsync
 
             var moduleFactory = new ModuleFactory(typeof(ManyArgumentsCombinedAsyncTest));
 
-            var buffer= await moduleFactory.RunAsync(args);
+            var buffer = await moduleFactory.RunAsync(args);
 
             Assert.True(moduleFactory.HasModule("-p"));
             Assert.True(moduleFactory.HasModule("-s"));

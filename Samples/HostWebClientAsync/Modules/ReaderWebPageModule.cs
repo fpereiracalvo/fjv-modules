@@ -10,6 +10,7 @@ using Fjv.Modules.Attributes;
 namespace HostWebClientAsync.Modules
 {
     [Module("-r")]
+    [ModuleHelp("Read a web page and return the content.")]
     public class ReaderWebPageModule : IDefaultModuleAsync
     {
         byte[] _bytes = new byte[]{};
@@ -26,6 +27,7 @@ namespace HostWebClientAsync.Modules
         }
 
         [Option("--all")]
+        [OptionHelp("Show all content from web page.")]
         public async Task<byte[]> ShowSource()
         {
             return await Task.Run(()=>{
@@ -36,6 +38,7 @@ namespace HostWebClientAsync.Modules
         }
 
         [Option("--ec")]
+        [OptionHelp("Show element content from web page.")]
         public async Task<byte[]> GetElementContent(string element)
         {
             var pattern = $"<{element}>(.*?)</{element}>";

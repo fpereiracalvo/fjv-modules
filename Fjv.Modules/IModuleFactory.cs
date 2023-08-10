@@ -18,5 +18,7 @@ namespace Fjv.Modules
         IQueryable<ModuleItemResult> GetModulesAsQueryable();
         IQueryable<OptionItemResult> GetOptionsAsQueriable(IModule module);
         object Invoke(IModule module, string optionname, params object[] args);
+        string GetHelp(string[] args);
+        string GetHelp();
     }
 }

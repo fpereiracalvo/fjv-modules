@@ -47,7 +47,7 @@ namespace Fjv.Modules
 
         public virtual IModule GetModule(string modulename)
         {
-            var moduleType = GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename))?.Module;
+            var moduleType = GetModelItemResult(modulename)?.Module;
 
             if(moduleType==null)
             {
@@ -68,26 +68,41 @@ namespace Fjv.Modules
         {
             return _modules.Select(s=> {
                 var attr = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleAttribute)));
+                var message = ((Attributes.ModuleHelpAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.ModuleHelpAttribute)))?.Message ?? string.Empty;
 
                 var option = _options.FirstOrDefault(x=>x.ModuleType.FullName.Equals(s.FullName)) ?? new ModuleOptions();
                 
                 return new ModuleItemResult{
                     Module = s,
-                    Name = option.GetName(attr.ModuleName)
+                    Name = option.GetName(attr.ModuleName),
+                    Message = message
                 };
             }).AsQueryable();
         }
 
+        public ModuleItemResult GetModelItemResult(string modulename)
+        {
+            return this.GetModulesAsQueryable().ToList().SingleOrDefault(s=>s.Name.Equals(modulename));
+        }
+
         public IQueryable<OptionItemResult> GetOptionsAsQueriable(IModule module)
         {
-            return module.GetType().GetMethods()
+            return GetOptionsAsQueriable(module.GetType());
+        }
+
+        public IQueryable<OptionItemResult> GetOptionsAsQueriable(Type module)
+        {
+            return module.GetMethods()
                 .Where(s=>s.GetCustomAttributes(typeof(Attributes.OptionAttribute), false).Any())
                 .Select(s=>{
                     var attr = ((Attributes.OptionAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.OptionAttribute)));
+                    var message = ((Attributes.OptionHelpAttribute)Attribute.GetCustomAttribute(s, typeof(Attributes.OptionHelpAttribute)))?.Message ?? string.Empty;
+                    
                     var model = new OptionItemResult{
-                        ArgumentsTypes = module.GetMethod(attr.OptionName).GetParameters().Select(s=>s.ParameterType).ToArray(),
+                        ArgumentsTypes = module.GetModuleMethod(attr.OptionName).GetParameters().Select(s=>s.ParameterType).ToArray(),
                         Name = attr.OptionName,
-                        SeparatedArguments = attr.SeparatedArgument
+                        SeparatedArguments = attr.SeparatedArgument,
+                        Message = message
                     };
                     
                     return model;

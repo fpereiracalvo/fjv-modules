@@ -9,6 +9,7 @@ using Fjv.Modules.Attributes;
 namespace HostWebClientAsync.Modules
 {
     [Module("-c")]
+    [ModuleHelp("Consume a web page and save the content for the next module.")]
     public class ConsumeWebPageModule : IDefaultModuleAsync
     {
         HttpClient _httpClient;

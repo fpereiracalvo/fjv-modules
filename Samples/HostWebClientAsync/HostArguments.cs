@@ -11,5 +11,10 @@ namespace HostWebClientAsync
         {
             return Environment.GetCommandLineArgs().Skip(1).ToArray();
         }
+
+        public bool HasArgument()
+        {
+            return GetArguments().Any();
+        }
     }
 }

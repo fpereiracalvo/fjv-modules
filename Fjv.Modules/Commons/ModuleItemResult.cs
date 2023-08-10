@@ -7,5 +7,6 @@ namespace Fjv.Modules.Commons
         public Type Module { get; set; }
         public string Name { get; set; }
         public bool SeparatedArguments { get; set; }
+        public string Message { get; set; }
     }
 }

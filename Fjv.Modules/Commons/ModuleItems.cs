@@ -4,6 +4,8 @@ namespace Fjv.Modules.Commons
 {
     public class ModuleItem
     {
+        public string Name { get; set; }
+        public string Message { get; set; }
         public IModule Module { get; set; }
         public byte[] ModuleArgument { get; set; }
         public string[] GlobalArguments { get; set; }
@@ -20,6 +22,7 @@ namespace Fjv.Modules.Commons
     public class OptionItem
     {
         public string Name { get; set; }
+        public string Message { get; set; }
         public object[] Arguments { get; set; }
     }
 }

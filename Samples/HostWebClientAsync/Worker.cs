@@ -22,7 +22,14 @@ namespace HostWebClientAsync
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _moduleFactory.RunAsync(_hostArguments.GetArguments());
+            if(!_hostArguments.HasArgument())
+            {
+                Console.WriteLine(_moduleFactory.GetHelp());
+            }
+            else
+            {
+                await _moduleFactory.RunAsync(_hostArguments.GetArguments());
+            }
 
             await _host.StopAsync();
         }

@@ -39,6 +39,21 @@ namespace Fjv.Modules.Extensions
             return null;
         }
 
+        public static MethodInfo GetModuleMethod(this Type module, string optionname) {
+            foreach(var item in module.GetMethods())
+            {
+                if (item.GetCustomAttributes(typeof(Attributes.OptionAttribute), false).Length > 0)
+                {
+                    if(((Attributes.OptionAttribute)Attribute.GetCustomAttribute(item, typeof(Attributes.OptionAttribute))).OptionName.Equals(optionname))
+                    {
+                        return item;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public static bool HasRunnningControl(this IModule module, ModuleRunningControl runnningControl)
         {
             var moduleRunningControl = ((Attributes.ModuleAttribute)Attribute.GetCustomAttribute(module.GetType(), typeof(Attributes.ModuleAttribute))).RunningControl;
