@@ -104,7 +104,7 @@ And how to use:
 
 > myconsoleapp -print myfile.txt --screen
 
-You can add help message to all modules and options. Those can show by GetHelp by module factory. See Sample projects.
+You can add help message to all modules and options. Those can show by GetHelp from a module factory. See Sample projects.
 
 The next sample is how to use a default module.
 
