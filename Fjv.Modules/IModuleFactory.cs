@@ -8,6 +8,11 @@ namespace Fjv.Modules
 {
     public interface IModuleFactory
     {
+        event EventHandler<ModuleEventArgument> OnModuleExecuting;
+        event EventHandler<ModuleEventArgument> OnModuleExecuted;
+        event EventHandler<OptionEventArgument> OnOptionExecuting;
+        event EventHandler<OptionEventArgument> OnOptionExecuted;
+
         List<ModuleItem> GetModulesItems(string[] args);
         byte[] Run(string[] args, byte[] buffer = null);
         byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input);
