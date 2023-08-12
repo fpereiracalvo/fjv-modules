@@ -2,6 +2,7 @@
 Fjv.Modules is a library to create clean command-line applications.
 
 Default use
+
 ```csharp
 var _args = Environment.GetCommandLineArgs().Skip(1).ToArray(); // skiping argument on .Net6.
 
@@ -11,6 +12,7 @@ factory.Run(_args);
 ```
 
 With dependency injection add a scope of IModuleFactory.
+
 ```csharp
 using Fjv.Modules.DependencyInjection;
 
@@ -154,6 +156,7 @@ var buffer= moduleFactory.Run(args);
 ```
 
 Add a scope of IModuleFactory in the same manner using dependency injection extension.
+
 ```csharp
 using Fjv.Modules.DependencyInjection;
 
@@ -170,3 +173,15 @@ services.AddModuleFactory(new Assembly[]{
     }
 });
 ```
+
+# Events
+
+The ModuleFactory events give you control over the modules runing.
+
+- OnModuleExecuting: Will raise when a module is executing.
+- OnModuleExecuted: Will raise when a module is executed.
+- OnOptionExecuting: Will raise when an option is executing.
+- OnOptionExecuted: Will raise when an option is executed.
+- OnError: Will raise when the module throws an exception.
+
+See more on sample projects.

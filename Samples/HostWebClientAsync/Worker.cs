@@ -19,7 +19,7 @@ namespace HostWebClientAsync
             _moduleFactory = moduleFactory;
             _hostArguments = hostArguments;
 
-            _moduleFactory.OnError+= (sender, e) => {
+            _moduleFactory.OnError += (sender, e) => {
                 Console.WriteLine(e.Exception.Message);
 
                 Environment.Exit(1);
