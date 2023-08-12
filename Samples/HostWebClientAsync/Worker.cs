@@ -18,6 +18,20 @@ namespace HostWebClientAsync
             _host = host;
             _moduleFactory = moduleFactory;
             _hostArguments = hostArguments;
+
+            _moduleFactory.OnError+= (sender, e) => {
+                Console.WriteLine(e.Exception.Message);
+
+                Environment.Exit(1);
+            };
+
+            _moduleFactory.OnModuleExecuting += (sender, e) => {
+                Console.WriteLine($"Executing {e.Module.Name}...");
+            };
+
+            _moduleFactory.OnOptionExecuting += (sender, e) => {
+                Console.WriteLine($"Executing {e.Option.Name}...");
+            };
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

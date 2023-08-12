@@ -21,21 +21,10 @@ namespace HostWebClientAsync.Modules
 
         public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index)
         {
-            try
-            {
-                var url = Encoding.UTF8.GetString(input);
-                var result = await _httpClient.GetByteArrayAsync(url);
+            var url = Encoding.UTF8.GetString(input);
+            var result = await _httpClient.GetByteArrayAsync(url);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                //end console with exit 1
-                Console.WriteLine(ex.Message);
-                Environment.Exit(1);
-
-                return null;
-            }
+            return result;
         }
     }
 }

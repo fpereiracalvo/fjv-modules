@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Fjv.Modules.Commons;
 using Fjv.Modules.Extensions;
@@ -12,15 +13,25 @@ namespace Fjv.Modules
 
             foreach (var item in modules)
             {
-                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                try
                 {
-                    return Run(item, this, buffer);
-                }
+                    if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                    {
+                        return Run(item, this, buffer);
+                    }
 
-                buffer = Run(item, this, buffer);
+                    buffer = Run(item, this, buffer);    
+                }
+                catch (Exception ex)
+                {
+                    this.OnError?.Invoke(this, new ModuleExceptionEventArgument(item, ex));
+
+                    throw;
+                }
             }
 
             return buffer;
+
         }
 
         public virtual byte[] Run(ModuleItem module, ModuleFactory moduleFactory, byte[] input)
@@ -60,12 +71,21 @@ namespace Fjv.Modules
 
             foreach (var item in modules)
             {
-                if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                try
                 {
-                    return await RunAsync(item, this, buffer);
-                }
+                    if(item.Module.HasRunnningControl(ModuleRunningControl.ControlTaker))
+                    {
+                        return await RunAsync(item, this, buffer);
+                    }
 
-                buffer = await RunAsync(item, this, buffer);
+                    buffer = await RunAsync(item, this, buffer);    
+                }
+                catch (Exception ex)
+                {
+                    this.OnError?.Invoke(this, new ModuleExceptionEventArgument(item, ex));
+
+                    throw;
+                }
             }
 
             return buffer;

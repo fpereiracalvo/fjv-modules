@@ -12,6 +12,7 @@ namespace Fjv.Modules
         event EventHandler<ModuleEventArgument> OnModuleExecuted;
         event EventHandler<OptionEventArgument> OnOptionExecuting;
         event EventHandler<OptionEventArgument> OnOptionExecuted;
+        event EventHandler<ModuleExceptionEventArgument> OnError;
 
         List<ModuleItem> GetModulesItems(string[] args);
         byte[] Run(string[] args, byte[] buffer = null);

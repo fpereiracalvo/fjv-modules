@@ -9,5 +9,6 @@ namespace Fjv.Modules
         public event EventHandler<ModuleEventArgument> OnModuleExecuted;
         public event EventHandler<OptionEventArgument> OnOptionExecuting;
         public event EventHandler<OptionEventArgument> OnOptionExecuted;
+        public event EventHandler<ModuleExceptionEventArgument> OnError;
     }
 }
