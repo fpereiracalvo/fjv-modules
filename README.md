@@ -174,7 +174,7 @@ services.AddModuleFactory(new Assembly[]{
 });
 ```
 
-# Events
+## Events
 
 The ModuleFactory events give you control over the modules runing.
 
