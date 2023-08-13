@@ -26,6 +26,4 @@ IHost _host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-_host.Run();
-
-//do some stuff.
+await _host.RunAsync();

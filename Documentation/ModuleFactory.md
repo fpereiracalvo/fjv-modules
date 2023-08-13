@@ -2,7 +2,7 @@
 
 The module factory is based on a interface called IModuleFactory.
 
-This interface define many methods to load modules from assemblies, classes, applying some options and run them.
+This interface define many methods to find and run the modules. The constructor has properties to load modules from assemblies, classes, applying some options and run them.
 
 The most basic run of ModuleFactory is the next:
 
@@ -34,7 +34,7 @@ We can pass a class to ModuleFactory. This scope the module scan to the class na
 IModuleFactory moduleFactory = new ModuleFactory(typeof(MyClass));
 ```
 
-When we need apply some options using a ModuleOptions, we can use the next overload:
+When we need apply some options using a ModuleOptions, use the next overload:
 
 ```csharp
 //load modules classes automatically from a third party class with options.
@@ -79,7 +79,7 @@ byte[] buffer = moduleFactory.Run(args);
 
 ## Events
 
-ModuleFactory has events to control the modules running.
+ModuleFactory has events to know the module status.
 
 - OnModuleExecuting: Will raise when a module is executing.
 - OnModuleExecuted: Will raise when a module is executed.
@@ -121,4 +121,4 @@ moduleFactory.OnError += (sender, e) => {
 byte[] buffer = moduleFactory.Run(args);
 ```
 
-All events has a sender and a event args to take control over the module running.
+The events has a ModuleEventArgs or OptionEventArgs to get the module or option that is executing.
