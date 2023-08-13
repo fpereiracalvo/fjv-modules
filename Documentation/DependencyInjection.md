@@ -4,7 +4,7 @@ Fjv.Modules.DependencyInjection is a library that provide dependency injection t
 
 To use the dependency injection extension for Fjv.Modules, we need to install the NuGet package [Fjv.Modules.DependencyInjection](https://www.nuget.org/packages/Fjv.Modules.DependencyInjection).
 
-Add service to the dependency injection container use the extension method `AddModuleFactory` from `IServiceCollection`.
+Add service to the dependency injection container using the extension method `AddModuleFactory` from `IServiceCollection`.
 
 This injection preparation add a scope of `IModuleFactory` to the dependency injection container.
 
