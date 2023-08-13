@@ -4,7 +4,7 @@ namespace Fjv.Modules.Commons
 {
     public class ModuleEventArgument : EventArgs
     {
-        public ModuleItem Module { get; }
+        readonly public ModuleItem Module { get; }
 
         public ModuleEventArgument(ModuleItem module)
         {

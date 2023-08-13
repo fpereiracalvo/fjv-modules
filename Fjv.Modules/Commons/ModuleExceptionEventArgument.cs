@@ -4,7 +4,7 @@ namespace Fjv.Modules.Commons
 {
     public class ModuleExceptionEventArgument : ModuleEventArgument
     {
-        public Exception Exception { get; }
+        readonly public Exception Exception { get; }
 
         public ModuleExceptionEventArgument(ModuleItem module, Exception exception)
             : base(module)
