@@ -23,7 +23,7 @@ To use the running control, we need to use the ModuleRunningControl enum.
 - **Input**: The module will run only in first place.
 - **Output**: The module will run as a output module, in last place.
 - **ControlTaker**: The module will run and return inmediatelly a result. That can be use with a nested module factory.
-- **Unique**: The module will run only one time and it cannot argument more than one time. Throw an error if the same argment exists more than one.
+- **Unique**: The module will run only one time and it cannot argument more than one time. Throw an error if the same argment exists more than once.
 
 ```csharp
 // define the module name and running control.
