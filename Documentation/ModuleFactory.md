@@ -1,4 +1,4 @@
-# Module factory
+# How to use a module factory
 
 The module factory is based on a interface called IModuleFactory.
 
@@ -25,6 +25,13 @@ IModuleFactory moduleFactory = new ModuleFactory(new Assembly[]{
 });
 // and run it.
 byte[] buffer = moduleFactory.Run(args);
+```
+
+We can pass a class to ModuleFactory. This scope the module scan to the class namespace.
+
+```csharp
+// load module classes automatically.
+IModuleFactory moduleFactory = new ModuleFactory(typeof(MyClass));
 ```
 
 When we need apply some options using a ModuleOptions, we can use the next overload:

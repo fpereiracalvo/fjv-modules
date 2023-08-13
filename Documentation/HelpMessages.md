@@ -1,4 +1,4 @@
-# Help messages
+# Modules and options help messages
 
 We can show help messages for modules and options. The help messages are defined by ModuleHelp and OptionHelp attributes.
 

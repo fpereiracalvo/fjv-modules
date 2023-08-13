@@ -1,4 +1,4 @@
-# Module interfaces
+# Modules interfaces
 
 ## Default
 
@@ -7,7 +7,7 @@ The default modules interfaces are:
 - IDefaultModule
 - IDefaultModuleAsync
 
-This interfaces define the most basic method for the modules. This method allow us execute any business what we will need, perhaps initilization of the module before execute the options or execute some an action.
+This interfaces define the most basic method for the modules. This method allow us execute any business what we will need, perhaps initilization of the module before execute the options or execute some an action directly.
 
 The IDefaultModuleAsync define LoadAsync method for asynchronous execution.
 
@@ -23,7 +23,7 @@ This interfaces define the same basic method, but with a little bit change. That
 ## Arguments of Load method
 
 The Load method of the modules can receive the next arguments:
-- input: The input of the module. This is the output of the previous module.
+- input: The input of the module. Maybe can has data from the output of the previous module that we will process or transform to passing to the next module.
 - moduleArgument: The argument of the module. This is the argument of the module when it is used with a direct argument.
 - args: The arguments of the console application.
 - index: The index of the module in the console application arguments.
@@ -41,9 +41,9 @@ public class PrintModule : IDefaultModule
 
     public byte[] Load(byte[] input, string[] args, int index)
     {
-        _content = MyReader(args[index]);
+        _content = ProcessInput(input);
 
-        return input;
+        return Encoding.UTF8.GetBytes(_content);
     }
 
     [Option("--screen")]
@@ -66,12 +66,9 @@ public class PrintModule : IDefaultModuleAsync
 
     public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index)
     {
-        return await Task.Run()
-        {
-            _content = MyReader(args[index]);
+        _content = await ProcessInputAsync(input);
 
-            return input;
-        };
+        return Encoding.UTF8.GetBytes(_content);
     }
 
     [Option("--screen")]
@@ -122,8 +119,7 @@ public class PrintModule : IArgumentableModuleAsync
 
     public async Task<byte[]> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index)
     {
-        return await Task.Run()
-        {
+        return await Task.Run(() => {
             _content = MyReader(moduleArgument);
 
             return input;
