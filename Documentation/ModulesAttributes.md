@@ -11,13 +11,13 @@ The module attribute is used to define the module name and running control.
 [Module("-print")]
 ```
 
-This name is use to invoke the module in the command line arguments.
+This name is used to invoke the module in the command line arguments.
     
 ```bash
 > myapp -print
 ```
 
-To use the running control, we need to use the ModuleRunningControl enum.
+We need the ModuleRunningControl enum to set the running mode of the module.
 
 - **NotSet**: Default.
 - **Input**: The module will run only in first place.
@@ -49,7 +49,7 @@ The option attribute is used to define the option name and running control.
 public byte[] MyOption(string text)
 ```
 
-This name is use to invoke the option in the command line arguments.
+This name is used to invoke the option in the command line arguments.
     
 ```bash
 > myapp -print --text "Hello world!"
