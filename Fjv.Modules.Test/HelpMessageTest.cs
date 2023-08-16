@@ -32,7 +32,7 @@ namespace Fjv.Modules.Test.HelpMessage
             Console.WriteLine(message);
 
             //then
-            Assert.Equal($"-p\tHelp message for PClass.\n\t--rs\tHelp message for RSOption.\n\t--ff\tHelp message for FfOption.\n-s\tHelp message for SClass.\n\t--put\tHelp message for PutOption. Input: integer value, second integer value.\n\t--pop\tHelp message for PopOption.\n", message);
+            Assert.Equal($"-p\tHelp message for PClass.\n\t--ff\tHelp message for FfOption.\n\t--rs\tHelp message for RSOption.\n-s\tHelp message for SClass.\n\t--pop\tHelp message for PopOption.\n\t--put\tHelp message for PutOption. Input: integer value, second integer value.\n", message);
         }
     }
 
