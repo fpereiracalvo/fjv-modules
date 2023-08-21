@@ -10,6 +10,7 @@
     <RepositoryURL>https://github.com/fpereiracalvo/fjv-modules.git</RepositoryURL>
     <PackageLicense>https://github.com/fpereiracalvo/fjv-modules/blob/main/LICENSE</PackageLicense>
     <PackageDescription>Command-line manager module factory</PackageDescription>
+    <PackageTags>command-line;command;line;cmd;shell;clean-command;clean;commands;arguments;modules;modularized</PackageTags>
   </PropertyGroup>
 
 </Project>
