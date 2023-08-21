@@ -12,7 +12,7 @@ IModuleFactory factory = new ModuleFactory(typeof(Program).Assembly);
 factory.Run(_args);
 ```
 
-```csharp
+Or you can use dependency injection to inject the module factory.
 
 ```csharp
 using Fjv.Modules.DependencyInjection;
