@@ -1,20 +1,20 @@
-# Módulos Genéricos
+# Generic Modules
 
-Los módulos genéricos permiten trabajar con tipos de datos específicos en lugar de usar `byte[]` para la entrada y salida.
+Generic modules allow you to work with specific data types instead of using `byte[]` for input and output. This provides type safety and better integration with your application's data structures.
 
-## Interfaces Genéricas
+## Generic Interfaces
 
-Las interfaces genéricas disponibles son:
+The available generic interfaces are:
 
-- `IModule<TInput, TOutput>`: Interfaz base para todos los módulos genéricos.
-- `IDefaultModule<TInput, TOutput>`: Para módulos genéricos estándar.
-- `IArgumentableModule<TInput, TArg, TOutput>`: Para módulos genéricos que aceptan argumentos directos.
-- `IDefaultModuleAsync<TInput, TOutput>`: Para módulos genéricos asíncronos.
-- `IArgumentableModuleAsync<TInput, TArg, TOutput>`: Para módulos genéricos asíncronos que aceptan argumentos directos.
+- `IModule<TInput, TOutput>`: Base interface for all generic modules.
+- `IDefaultModule<TInput, TOutput>`: For standard generic modules.
+- `IArgumentableModule<TInput, TArg, TOutput>`: For generic modules that accept direct arguments.
+- `IDefaultModuleAsync<TInput, TOutput>`: For asynchronous generic modules.
+- `IArgumentableModuleAsync<TInput, TArg, TOutput>`: For asynchronous generic modules that accept direct arguments.
 
-## Ejemplo de uso
+## Usage Examples
 
-### Definición de un módulo genérico
+### Defining a Generic Module
 
 ```csharp
 [Module("-string-processor")]
@@ -36,55 +36,109 @@ public class StringProcessorModule : IDefaultModule<string, string>
     {
         return _content.ToUpper();
     }
+    
+    [Option("--lower")]
+    [OptionHelp("Convert the string to lowercase")]
+    public string ToLower()
+    {
+        return _content.ToLower();
+    }
 }
 ```
 
-### Creación de una fábrica genérica
+### Creating a Generic Factory
 
 ```csharp
-// Crear una fábrica que trabaja con strings como entrada y salida
+// Create a factory that works with strings for both input and output
 var factory = GenericModuleExtensions.CreateGenericFactory<string, string>(typeof(Program).Assembly);
 
-// Ejecutar la fábrica
-string result = factory.Run(args, "Initial text");
+// Execute the factory with initial text
+string result = factory.Run(args, "Initial Text");
 Console.WriteLine($"Result: {result}");
 ```
 
-## Compatibilidad con módulos existentes
-
-Las interfaces originales (`IDefaultModule`, `IArgumentableModule`, etc.) ahora heredan de las interfaces genéricas usando `byte[]` como tipo, lo que garantiza la compatibilidad con el código existente.
-
-### Adaptar módulos existentes al sistema genérico
+### Using Different Input and Output Types
 
 ```csharp
-// Adaptar un módulo existente para trabajar con strings
+// Create a factory that accepts a Person object as input and returns a JSON string
+var personFactory = GenericModuleExtensions.CreateGenericFactory<Person, string>(typeof(Program).Assembly);
+
+// Run with a Person object
+var person = new Person { Name = "John", Age = 30 };
+string json = personFactory.Run(args, person);
+```
+
+## Compatibility with Existing Modules
+
+The original interfaces (`IDefaultModule`, `IArgumentableModule`, etc.) now inherit from the generic interfaces using `byte[]` as the type, ensuring compatibility with existing code.
+
+### Adapting Existing Modules to the Generic System
+
+```csharp
+// Adapt an existing module to work with strings
 IDefaultModule legacyModule = new MyExistingModule();
 IDefaultModule<byte[], string> adaptedModule = legacyModule.AsGeneric<string>();
 
-// También puedes proporcionar tu propio convertidor
+// You can also provide your own converter
 IDefaultModule<byte[], CustomType> customAdaptedModule = legacyModule.AsGeneric<CustomType>(
-    bytes => new CustomType(bytes) // Convertidor personalizado
+    bytes => new CustomType(bytes) // Custom converter
 );
 ```
 
-## Convertidores personalizados
+## Custom Converters
 
-El sistema permite definir convertidores personalizados para transformar entre diferentes tipos de datos:
+The system allows you to define custom converters to transform between different data types:
 
 ```csharp
-// Definir un convertidor personalizado
+// Define a custom converter
 Func<byte[], Person> personConverter = bytes => 
 {
     var json = System.Text.Encoding.UTF8.GetString(bytes);
     return System.Text.Json.JsonSerializer.Deserialize<Person>(json);
 };
 
-// Usar el convertidor con un módulo existente
+// Use the converter with an existing module
 var personModule = legacyModule.AsGeneric<Person>(personConverter);
 ```
 
-## Notas importantes
+## Working with Asynchronous Generic Modules
 
-1. Las opciones de los módulos genéricos deben devolver el mismo tipo que el tipo de salida del módulo.
-2. Para usar tipos complejos, es recomendable implementar los convertidores adecuados.
-3. La biblioteca provee convertidores por defecto para tipos comunes como `string` y `byte[]`.
+```csharp
+[Module("-async-data-processor")]
+[ModuleHelp("Process data asynchronously")]
+public class AsyncDataProcessor : IDefaultModuleAsync<string, string>
+{
+    private string _data;
+
+    public async Task<string> LoadAsync(string input, string[] args, int index)
+    {
+        _data = input ?? string.Empty;
+        await Task.Delay(100); // Simulating some async work
+        return _data;
+    }
+
+    [Option("--process")]
+    [OptionHelp("Process the data asynchronously")]
+    public async Task<string> ProcessAsync()
+    {
+        await Task.Delay(500); // Simulating processing
+        return $"Processed: {_data}";
+    }
+}
+
+// Using the async module
+var asyncFactory = GenericModuleExtensions.CreateGenericAsyncFactory<string, string>(
+    typeof(Program).Assembly
+);
+
+string result = await asyncFactory.RunAsync(args, "Initial data");
+```
+
+## Important Notes
+
+1. Options in generic modules must return the same type as the module's output type.
+2. For complex types, it's recommended to implement appropriate converters.
+3. The library provides default converters for common types like `string` and `byte[]`.
+4. Generic modules provide compile-time type safety, reducing the need for type casting.
+5. You can mix regular and generic modules in the same application.
+6. Type conversions are handled automatically by the library when possible.
