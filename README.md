@@ -38,6 +38,7 @@ services.AddModuleFactory(typeof(Program).Assembly);
 - [Modules attributes](Documentation/ModulesAttributes.md)
 - [Modules and options help messages](Documentation/HelpMessages.md)
 - [Dependency injection](Documentation/DependencyInjection.md)
+- [Generic modules](Documentation/GenericModules.md)
 
 See more examples on [fjv-modules-samples](https://github.com/fpereiracalvo/fjv-modules-samples) repository.
 

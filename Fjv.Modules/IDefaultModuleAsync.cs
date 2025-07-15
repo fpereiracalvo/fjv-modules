@@ -1,9 +1,13 @@
 using System.Threading.Tasks;
+using Fjv.Modules.Generic;
 
 namespace Fjv.Modules
 {
-    public interface IDefaultModuleAsync : IModule
+    /// <summary>
+    /// Default asynchronous module interface for legacy compatibility
+    /// </summary>
+    public interface IDefaultModuleAsync : IModule, IDefaultModuleAsync<byte[], byte[]>
     {
-        Task<byte[]> LoadAsync(byte[] input, string[] args, int index);
+        // Inherits LoadAsync method from IDefaultModuleAsync<byte[], byte[]>
     }
 }

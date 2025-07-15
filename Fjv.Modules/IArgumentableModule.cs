@@ -1,7 +1,12 @@
+using Fjv.Modules.Generic;
+
 namespace Fjv.Modules
 {
-    public interface IArgumentableModule : IModule
+    /// <summary>
+    /// Argumentable module interface for legacy compatibility
+    /// </summary>
+    public interface IArgumentableModule : IModule, IArgumentableModule<byte[], byte[], byte[]>
     {
-        byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index);
+        // Inherits Load method from IArgumentableModule<byte[], byte[], byte[]>
     }
 }
