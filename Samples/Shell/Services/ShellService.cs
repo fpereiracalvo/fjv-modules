@@ -1,8 +1,5 @@
-using System;
 using System.Reflection;
-using Fjv.Modules;
-using System.Threading;
-using System.Linq;
+using Fjv.Modules.Generic;
 
 namespace Samples.Shell.Services
 {
@@ -17,15 +14,13 @@ namespace Samples.Shell.Services
             _cancelationToken = cancelationToken;
         }
 
-        public void Begin()
+        public async Task BeginAsync()
         {
-            byte[] buffer = new byte[]{};
-
             WelcomeMessage();
 
             while (!_cancelationToken.IsCancellationRequested)
             {
-                var moduleFactory = new ModuleFactory(_assembly);
+                var moduleFactory = new ModuleFactory<string, string>(_assembly);
 
                 Console.Write("❯ ");
 
@@ -37,9 +32,9 @@ namespace Samples.Shell.Services
                 {
                     try
                     {
-                        buffer = moduleFactory.Run(args, buffer);
+                        await moduleFactory.RunAsync(args, string.Empty, _cancelationToken);
 
-                        //do something with buffer.
+                        //do something more.
                     }
                     catch (Exception ex)
                     {

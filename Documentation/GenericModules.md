@@ -57,6 +57,33 @@ string result = factory.Run(args, "Initial Text");
 Console.WriteLine($"Result: {result}");
 ```
 
+### Using Generic Modules with Dependency Injection
+
+You can integrate generic module factories with Microsoft's dependency injection:
+
+```csharp
+// Register a generic module factory for string processing
+services.AddGenericModuleFactory<string, string>(typeof(Program).Assembly);
+
+// Inject and use in your services
+public class TextProcessor
+{
+    private readonly IModuleFactory<string, string> _moduleFactory;
+    
+    public TextProcessor(IModuleFactory<string, string> moduleFactory)
+    {
+        _moduleFactory = moduleFactory;
+    }
+    
+    public async Task<string> ProcessTextAsync(string text, string[] args)
+    {
+        return await _moduleFactory.RunAsync(args, text);
+    }
+}
+```
+
+For more details on dependency injection support, see the [Dependency Injection](DependencyInjection.md) documentation.
+
 ### Using Different Input and Output Types
 
 ```csharp

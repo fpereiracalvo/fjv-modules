@@ -1,16 +1,13 @@
 using System;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Fjv.Modules.Extensions;
 using Fjv.Modules.Generic.Test.TestModules;
-using Xunit;
 
 namespace Fjv.Modules.Generic.Test
 {
     public class GenericAdapterTests
     {
-        // Test para verificar que podemos usar módulos genéricos directamente
+        // Test to verify that we can use generic modules directly
         [Fact]
         public void GenericModule_CanBeUsedDirectly()
         {
@@ -23,40 +20,40 @@ namespace Fjv.Modules.Generic.Test
             // Assert
             Assert.Equal("test direct usage", result);
             
-            // También probamos otras operaciones
+            // Also, we test other operations
             Assert.Equal("TEST UPPERCASE", stringModule.ToUpper("test uppercase"));
         }
         
-        // Test para verificar que los módulos legacy también funcionan
+        // Test to verify that legacy modules also work
         [Fact]
         public void LegacyModule_CanBeUsedDirectly()
         {
             // Arrange
             var legacyModule = new LegacyByteArrayModule();
-            
+
             // Act
-            var input = Encoding.UTF8.GetBytes("legacy test");
+            var input = "legacy test";
             var output = legacyModule.Process(input);
             
-            // Assert - Verificamos que los primeros 3 bytes sean el prefijo esperado
+            // Assert - Verify that the first 3 bytes are the expected prefix
             Assert.Equal(0x01, output[0]);
             Assert.Equal(0x02, output[1]);
             Assert.Equal(0x03, output[2]);
             
-            // Y que el resto sean los bytes de entrada
+            // And that the rest are the input bytes
             var originalInput = new byte[output.Length - 3];
             Array.Copy(output, 3, originalInput, 0, originalInput.Length);
             Assert.Equal("legacy test", Encoding.UTF8.GetString(originalInput));
         }
         
-        // Test para verificar que podemos obtener un módulo por su nombre desde la fábrica
+        // Test to verify that we can get a module by its name from the factory
         [Fact]
         public void ModuleFactory_CanGetModuleByName()
         {
             // Arrange
             var factory = new ModuleFactory<string, string>(Assembly.GetExecutingAssembly());
             
-            // Act - Obtenemos un módulo por su nombre
+            // Act - We get a module by its name
             var stringModule = factory.GetModule("stringmodule");
             
             // Assert

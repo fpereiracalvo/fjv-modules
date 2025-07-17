@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fjv.Modules.Generic
@@ -18,6 +19,6 @@ namespace Fjv.Modules.Generic
         /// <param name="args">Command line arguments</param>
         /// <param name="index">Index of the current module in arguments array</param>
         /// <returns>A task that represents the asynchronous operation with typed output data</returns>
-        Task<TOutput> LoadAsync(TInput input, TArg moduleArgument, string[] args, int index);
+        Task<TOutput> LoadAsync(TInput input, TArg moduleArgument, string[] args, int index, CancellationToken cancellationToken = default);
     }
 }

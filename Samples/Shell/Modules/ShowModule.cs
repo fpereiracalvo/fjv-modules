@@ -1,42 +1,38 @@
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using Fjv.Modules;
+using Fjv.Modules.Generic;
 using Fjv.Modules.Attributes;
 using Fjv.Modules.Commons;
 
 namespace Samples.Shell.Modules
 {
     [Module("show", ModuleRunningControl.Unique)]
-    public class ShowModule : IDefaultModule
+    public class ShowModule : IDefaultModuleAsync<string, string>
     {
-        string _content;
-        byte[] _input;
+        string _content = string.Empty;
 
         string _pattern = @"{{attribute}}=([""'])(?:(?=(\\?))\2.)*?\1";
 
-        public byte[] Load(byte[] input, string[] args, int index)
+        public async Task<string> LoadAsync(string input, string[] args, int index, CancellationToken cancellationToken = default)
         {
-            _content = System.Text.Encoding.UTF8.GetString(input);
+            _content = input;
 
-            _input = input;
-
-            return input;
+            return await Task.FromResult(input);
         }
 
         [Option("links")]
-        public byte[] GetLinks()
+        public async Task<string> GetLinksAsync()
         {
             RunRegex(_content, "href");
 
-            return _input;
+            return await Task.FromResult(_content);
         }
 
         [Option("sources")]
-        public byte[] GetImages()
+        public async Task<string> GetImagesAsync()
         {
             RunRegex(_content, "src");
 
-            return _input;
+            return await Task.FromResult(_content);
         }
 
         private void RunRegex(string input, string attribute)

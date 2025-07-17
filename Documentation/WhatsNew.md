@@ -26,9 +26,11 @@ Full support for asynchronous operations in modules:
 Improved integration with Microsoft's dependency injection system:
 
 - Automatic module registration with `AddModuleFactory`
+- Generic module factory support with `AddGenericModuleFactory<TInput, TOutput>`
 - Support for scoped services in modules
 - Multiple assembly scanning options
 - Namespace-scoped module discovery
+- Ability to use both standard and generic module factories in the same application
 
 [Learn more about dependency injection](DependencyInjection.md)
 
@@ -48,6 +50,14 @@ Catch-all modules for handling unknown commands:
 - Register a module with the wildcard pattern `"*"`
 - Receive unknown arguments directly for custom processing
 - Create fallback behavior or help systems
+
+### Empty Arguments Support for Options
+
+Enhanced flexibility for command options:
+
+- Support for options that don't require arguments
+- Define options that can be used as flags without parameters
+- Simplified syntax for boolean toggles and triggers
 
 ### Documentation and Help System
 

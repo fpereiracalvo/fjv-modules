@@ -77,6 +77,30 @@ public byte[] CustomOption(int a, int b)
 > myapp -print --sum 1 2
 ```
 
+### Empty Arguments Support
+
+Options can also be defined to accept no arguments, functioning as flags or triggers:
+
+```csharp
+// define an option that doesn't require arguments
+[Option("--verbose")]
+public string ToggleVerboseMode()
+{
+    // Enable verbose mode
+    this.IsVerbose = true;
+
+    return _value;
+}
+```
+
+This option can be invoked without providing any arguments:
+
+```bash
+> myapp -print --verbose
+```
+
+This is particularly useful for boolean toggles, mode switches, or trigger actions that don't require parameters.
+
 ## OptionHelp attribute
 
 The option help attribute is used to define the option help message.

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Fjv.Modules.Commons;
 using Fjv.Modules.Extensions;
@@ -55,7 +56,14 @@ namespace Fjv.Modules
             {
                 this.OnOptionExecuting?.Invoke(this,  new OptionEventArgument(module, option));
 
-                result = (byte[])moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
+                if(option.Arguments == null || !option.Arguments.Any())
+                {
+                    result = (byte[])moduleFactory.Invoke(module.Module, option.Name);
+                }
+                else
+                {
+                    result = (byte[])moduleFactory.Invoke(module.Module, option.Name, option.Arguments);
+                }
 
                 this.OnOptionExecuted?.Invoke(this,  new OptionEventArgument(module, option));
             }

@@ -1,20 +1,18 @@
-using System;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using Fjv.Modules.Attributes;
-using Fjv.Modules.Generic;
 
 namespace Fjv.Modules.Generic.Test.TestModules
 {
-    // Definimos un módulo genérico simple que trabaja con strings
+    // Define a simple generic module that works with strings
     [Module("stringmodule")]
     [ModuleHelp("A test module that processes strings")]
-    public class StringModule : IModule<string, string>, IModule
+    public class StringModule : IDefaultModule<string, string>
     {
         [Option("echo")]
         [OptionHelp("Echoes back the input string")]
         public string Echo(string input)
         {
+            Console.WriteLine($"Echoing input: {input}");
+
             return input;
         }
         
@@ -36,45 +34,20 @@ namespace Fjv.Modules.Generic.Test.TestModules
             Array.Reverse(chars);
             return new string(chars);
         }
-        
-        // Método auxiliar para las implementaciones legacy
-        private byte[] StringToBytes(string str)
+
+        public string Load(string input, string[] args, int index)
         {
-            return str != null ? System.Text.Encoding.UTF8.GetBytes(str) : Array.Empty<byte>();
-        }
-        
-        private string BytesToString(byte[] bytes)
-        {
-            return bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : string.Empty;
-        }
-        
-        // Implementaciones para compatibilidad con interfaces legacy
-        public byte[] Invoke(string optionName, byte[] input)
-        {
-            var inputStr = BytesToString(input);
-            string result = null;
-            
-            switch (optionName)
-            {
-                case "echo":
-                    result = Echo(inputStr);
-                    break;
-                case "uppercase":
-                    result = ToUpper(inputStr);
-                    break;
-                case "reverse":
-                    result = Reverse(inputStr);
-                    break;
-            }
-            
-            return StringToBytes(result);
+            Console.WriteLine($"Loading input: {input}");
+            Console.WriteLine($"Arguments: {string.Join(", ", args)}");
+
+            return string.Empty;
         }
     }
 
-    // Módulo por defecto sin argumentos que produce un string
+    // Default module without arguments that produces a string
     [Module("greeting")]
     [ModuleHelp("A default module that generates greetings")]
-    public class GreetingModule : IDefaultModule<string, string>, IDefaultModule
+    public class GreetingModule : IDefaultModule<string, string>
     {
         [Option("hello")]
         [OptionHelp("Says hello")]
@@ -90,53 +63,18 @@ namespace Fjv.Modules.Generic.Test.TestModules
             return "Goodbye, World!";
         }
         
-        // Implementación requerida por la interfaz IDefaultModule<TInput, TOutput>
+        // Implementation required by IDefaultModule<TInput, TOutput> interface
         public string Load(string input, string[] args, int index)
         {
-            // Para un módulo que no depende de entrada, simplemente ignoramos el input
-            return string.Empty; // O podríamos devolver un valor por defecto
-        }
-        
-        // Métodos auxiliares para las implementaciones legacy
-        private byte[] StringToBytes(string str)
-        {
-            return str != null ? System.Text.Encoding.UTF8.GetBytes(str) : null;
-        }
-        
-        private string BytesToString(byte[] bytes)
-        {
-            return bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
-        }
-        
-        // Implementaciones para compatibilidad con interfaces legacy
-        public byte[] Load(byte[] input, string[] args, int index)
-        {
-            // Ignoramos la entrada para un módulo IDefaultModule
-            return null; // Devolver null aquí hace que se use el valor de retorno de Invoke
-        }
-        
-        public byte[] Invoke(string optionName, byte[] input)
-        {
-            string result = null;
-            
-            switch (optionName)
-            {
-                case "hello":
-                    result = SayHello();
-                    break;
-                case "bye":
-                    result = SayGoodbye();
-                    break;
-            }
-            
-            return StringToBytes(result);
+            // For a module that doesn't depend on input, we simply ignore the input
+            return string.Empty; // Or we could return a default value
         }
     }
 
-    // Módulo argumentable que toma un argumento y produce un resultado
+    // Argumentable module that takes an argument and produces a result
     [Module("calculator")]
     [ModuleHelp("A module that performs simple calculations")]
-    public class CalculatorModule : IArgumentableModule<int, int, int>, IArgumentableModule
+    public class CalculatorModule : IArgumentableModule<int, int, int>
     {
         [Option("double")]
         [OptionHelp("Doubles the input value")]
@@ -152,100 +90,36 @@ namespace Fjv.Modules.Generic.Test.TestModules
             return input * input;
         }
         
-        // Implementación requerida por la interfaz IArgumentableModule<TInput, TArg, TOutput>
+        // Implementation required by the IArgumentableModule<TInput, TArg, TOutput> interface
         public int Load(int input, int moduleArgument, string[] args, int index)
         {
-            // Usamos el argumento como valor de entrada
+            // Use the argument as input value
             return moduleArgument;
-        }
-        
-        // Implementaciones para compatibilidad con interfaces legacy
-        public byte[] Load(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            // En las pruebas para argumentable module, se espera que pasemos directamente el valor
-            int intInput = moduleArgument != null && moduleArgument.Length >= 4 
-                ? BitConverter.ToInt32(moduleArgument, 0) 
-                : (input != null && input.Length >= 4 ? BitConverter.ToInt32(input, 0) : 0);
-                
-            return BitConverter.GetBytes(intInput);
-        }
-        
-        public byte[] Invoke(string optionName, byte[] input)
-        {
-            int inputValue = input != null && input.Length >= 4 ? BitConverter.ToInt32(input, 0) : 0;
-            int result = 0;
-            
-            switch (optionName)
-            {
-                case "double":
-                    result = Double(inputValue);
-                    break;
-                case "square":
-                    result = Square(inputValue);
-                    break;
-            }
-            
-            return BitConverter.GetBytes(result);
         }
     }
     
-    // Módulo asíncrono que simula operaciones de larga duración
+    // Asynchronous module that simulates long-running operations
     [Module("asynctask")]
     [ModuleHelp("A module that performs asynchronous operations")]
-    public class AsyncTaskModule : IArgumentableModuleAsync<string, string, string>, IArgumentableModuleAsync
+    public class AsyncTaskModule : IArgumentableModuleAsync<string, string, string>
     {
         [Option("delay")]
         [OptionHelp("Adds a delay and returns the input")]
-        public async Task<string> DelayOperation(string input)
+        public async Task<string> DelayOperation()
         {
-            // Simula una operación que toma tiempo
+            // Simulates a time-consuming operation
             await Task.Delay(100);
-            return $"Processed: {input}";
+
+            return $"Processed";
         }
         
-        // Implementación requerida por la interfaz IArgumentableModuleAsync<TInput, TArg, TOutput>
-        public async Task<string> LoadAsync(string input, string moduleArgument, string[] args, int index)
+        // Implementation required by the IArgumentableModuleAsync<TInput, TArg, TOutput> interface
+        public async Task<string> LoadAsync(string input, string moduleArgument, string[] args, int index, CancellationToken cancellationToken = default)
         {
-            // Usamos el argumento como valor
-            await Task.CompletedTask; // Para hacerlo asíncrono
+            // Use the argument as value
+            await Task.CompletedTask; // To make it asynchronous
+            
             return moduleArgument;
-        }
-        
-        // Métodos auxiliares para las implementaciones legacy
-        private byte[] StringToBytes(string str)
-        {
-            return str != null ? System.Text.Encoding.UTF8.GetBytes(str) : null;
-        }
-        
-        private string BytesToString(byte[] bytes)
-        {
-            return bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
-        }
-        
-        // Implementaciones para compatibilidad con interfaces legacy
-        public async Task<byte[]> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index)
-        {
-            var inputStr = BytesToString(input);
-            var argStr = BytesToString(moduleArgument);
-            
-            // Para pruebas, simplemente pasamos la entrada después de una espera mínima
-            await Task.Delay(1);
-            return input;
-        }
-        
-        public async Task<byte[]> InvokeAsync(string optionName, byte[] input)
-        {
-            var inputStr = BytesToString(input);
-            string result = string.Empty;
-            
-            switch (optionName)
-            {
-                case "delay":
-                    result = await DelayOperation(inputStr);
-                    break;
-            }
-            
-            return System.Text.Encoding.UTF8.GetBytes(result);
         }
     }
 }

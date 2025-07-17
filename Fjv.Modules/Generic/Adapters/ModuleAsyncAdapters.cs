@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fjv.Modules.Generic.Adapters
@@ -26,7 +27,7 @@ namespace Fjv.Modules.Generic.Adapters
         /// <summary>
         /// Loads the legacy module asynchronously and converts its output
         /// </summary>
-        public async Task<TOutput> LoadAsync(byte[] input, string[] args, int index)
+        public async Task<TOutput> LoadAsync(byte[] input, string[] args, int index, CancellationToken cancellationToken = default)
         {
             var result = await _legacyModule.LoadAsync(input, args, index);
             return _outputConverter(result);
@@ -56,9 +57,9 @@ namespace Fjv.Modules.Generic.Adapters
         /// <summary>
         /// Loads the legacy module asynchronously and converts its output
         /// </summary>
-        public async Task<TOutput> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index)
+        public async Task<TOutput> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index, CancellationToken cancellationToken = default)
         {
-            var result = await _legacyModule.LoadAsync(input, moduleArgument, args, index);
+            var result = await _legacyModule.LoadAsync(input, moduleArgument, args, index, cancellationToken);
             return _outputConverter(result);
         }
     }
@@ -88,10 +89,10 @@ namespace Fjv.Modules.Generic.Adapters
         /// <summary>
         /// Converts the input and loads the module asynchronously
         /// </summary>
-        public async Task<TOutput> LoadAsync(TFactoryInput input, string[] args, int index)
+        public async Task<TOutput> LoadAsync(TFactoryInput input, string[] args, int index, CancellationToken cancellationToken = default)
         {
             var convertedInput = _inputConverter(input);
-            return await _module.LoadAsync(convertedInput, args, index);
+            return await _module.LoadAsync(convertedInput, args, index, cancellationToken);
         }
     }
 }

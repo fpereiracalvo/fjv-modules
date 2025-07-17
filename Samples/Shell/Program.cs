@@ -7,11 +7,11 @@ namespace Samples.Shell
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var shell = new ShellService(typeof(Program).Assembly, RunningControl.CancellationToken.Token);
 
-            shell.Begin();
+            await shell.BeginAsync();
         }
     }
 }
