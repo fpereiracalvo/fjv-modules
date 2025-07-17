@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Fjv.Modules.Attributes;
 using Fjv.Modules.Exceptions;
@@ -42,7 +43,7 @@ namespace Fjv.Modules.Test.ManyArgumentsAsync
     [Module("-p", Commons.ModuleRunningControl.Unique)]
     public class PClass : IDefaultModuleAsync
     {
-        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index)
+        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index, CancellationToken cancellationToken = default)
         {
             await Task.Run(async () => {
                 Console.WriteLine(nameof(PClass));
@@ -67,7 +68,7 @@ namespace Fjv.Modules.Test.ManyArgumentsAsync
     [Module("-s")]
     public class SClass : IDefaultModuleAsync
     {
-        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index)
+        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index, CancellationToken cancellationToken = default)
         {
             Console.WriteLine(nameof(SClass));
 
@@ -91,7 +92,7 @@ namespace Fjv.Modules.Test.ManyArgumentsAsync
     [Module("-o", Commons.ModuleRunningControl.Input)]
     public class OClass : IDefaultModuleAsync
     {
-        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index)
+        public async Task<byte[]> LoadAsync(byte[] input, string[] args, int index, CancellationToken cancellationToken = default)
         {
             Console.WriteLine(nameof(OClass));
 
@@ -106,7 +107,7 @@ namespace Fjv.Modules.Test.ManyArgumentsAsync
         Commons.ModuleRunningControl.ControlTaker )]
     public class MergeClass : IArgumentableModuleAsync
     {
-        public async Task<byte[]> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index)
+        public async Task<byte[]> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index, CancellationToken cancellationToken = default)
         {
             var auxArgs = args.Take(index).ToArray().Concat(args.Skip(index+2).ToArray()).ToArray();
 

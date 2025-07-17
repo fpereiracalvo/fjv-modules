@@ -1,7 +1,12 @@
+using Fjv.Modules.Generic;
+
 namespace Fjv.Modules
 {
-    public interface IDefaultModule : IModule
+    /// <summary>
+    /// Default module interface for legacy compatibility
+    /// </summary>
+    public interface IDefaultModule : IModule, IDefaultModule<byte[], byte[]>
     {
-        byte[] Load(byte[] input, string[] args, int index);
+        // Inherits Load method from IDefaultModule<byte[], byte[]>
     }
 }

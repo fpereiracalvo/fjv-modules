@@ -1,9 +1,13 @@
 using System.Threading.Tasks;
+using Fjv.Modules.Generic;
 
 namespace Fjv.Modules
 {
-    public interface IArgumentableModuleAsync : IModule
+    /// <summary>
+    /// Argumentable asynchronous module interface for legacy compatibility
+    /// </summary>
+    public interface IArgumentableModuleAsync : IModule, IArgumentableModuleAsync<byte[], byte[], byte[]>
     {
-        Task<byte[]> LoadAsync(byte[] input, byte[] moduleArgument, string[] args, int index);
+        // Inherits LoadAsync method from IArgumentableModuleAsync<byte[], byte[], byte[]>
     }
 }

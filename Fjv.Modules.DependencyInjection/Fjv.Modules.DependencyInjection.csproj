@@ -3,13 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Fjv.Modules.DependencyInjection</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.1</Version>
     <Authors>Francisco Pereira Calvo</Authors>
     <Company>Fjv - Chile</Company>
     <PackageProjectURL>https://github.com/fpereiracalvo</PackageProjectURL>
     <RepositoryURL>https://github.com/fpereiracalvo/fjv-modules.git</RepositoryURL>
     <PackageLicense>https://github.com/fpereiracalvo/fjv-modules/blob/main/LICENSE</PackageLicense>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageDescription>Dependency injection for command-line manager module factory</PackageDescription>
+    <PackageTags>command-line;command;line;cmd;shell;clean-command;clean;commands;arguments;modules;modularized</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,4 +24,7 @@
     <ProjectReference Include="..\Fjv.Modules\Fjv.Modules.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 </Project>
