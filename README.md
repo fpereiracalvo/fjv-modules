@@ -2,12 +2,6 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Fjv.Modules.svg)](https://www.nuget.org/packages/Fjv.Modules) [![NuGet](https://img.shields.io/nuget/dt/Fjv.Modules.svg)](https://www.nuget.org/packages/Fjv.Modules/) [![License](https://img.shields.io/github/license/fpereiracalvo/fjv-modules.svg)](LICENSE)
 
-## Support This Project
-
-If you find this library useful in your projects, please consider supporting its development. Your contribution helps maintain and improve Fjv.Modules.
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/fpereiracalvo?country.x=CL&locale.x=en_US)
-
 Fjv.Modules is a powerful library for creating command-line applications with a modular, extensible architecture. Each module is a class that implements specific interfaces and is automatically loaded and executed based on the arguments passed to the application.
 
 ## Quick Start
@@ -113,9 +107,3 @@ Get the source code from GitHub:
 
 ## Sample Applications
 See complete example applications in the [fjv-modules-samples](https://github.com/fpereiracalvo/fjv-modules-samples) repository.
-
-# Support This Project
-
-If you find this library useful in your projects, please consider supporting its development. Your contribution helps maintain and improve Fjv.Modules.
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/fpereiracalvo?country.x=CL&locale.x=en_US)
